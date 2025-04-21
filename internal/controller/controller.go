@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"wobble/backend/internal/controller/account"
-	"wobble/backend/internal/controller/cart"
-	"wobble/backend/internal/controller/store"
-	"wobble/backend/internal/repository/psql"
+	"github.com/eeQuillibrium/wobble/internal/controller/account"
+	"github.com/eeQuillibrium/wobble/internal/controller/cart"
+	"github.com/eeQuillibrium/wobble/internal/controller/store"
+	"github.com/eeQuillibrium/wobble/internal/repository/psql"
 )
 
 type Controller struct {

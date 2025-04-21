@@ -2,8 +2,8 @@ package store
 
 import (
 	"context"
+	"github.com/eeQuillibrium/wobble/internal/models"
 	"github.com/jackc/pgx/v5"
-	"wobble/backend/internal/models"
 )
 
 func (r Store) GetProducts(ctx context.Context) ([]models.Product, error) {

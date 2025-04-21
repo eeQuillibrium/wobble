@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"wobble/backend/pkg/utils"
+	"github.com/eeQuillibrium/wobble/pkg/utils"
 )
 
 func main() {

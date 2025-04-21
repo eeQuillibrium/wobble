@@ -1,6 +1,6 @@
 package account
 
-import repository "wobble/backend/internal/repository/psql/account"
+import repository "github.com/eeQuillibrium/wobble/internal/repository/psql/account"
 
 type Controller struct {
 	r repository.IAccountRepository

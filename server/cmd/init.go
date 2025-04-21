@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
+	"github.com/eeQuillibrium/wobble/internal/controller"
+	"github.com/eeQuillibrium/wobble/internal/repository/psql"
+	internal_http "github.com/eeQuillibrium/wobble/internal/transport/http"
+	"github.com/eeQuillibrium/wobble/pkg/logger"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/gofiber/template/html/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 	"os"
-	"wobble/backend/internal/controller"
-	"wobble/backend/internal/repository/psql"
-	internal_http "wobble/backend/internal/transport/http"
-	"wobble/backend/pkg/logger"
 )
 
 const cDSN = "postgres://postgres:secret@localhost:5433/wobble?sslmode=disable"

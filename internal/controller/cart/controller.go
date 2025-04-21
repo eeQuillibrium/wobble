@@ -1,6 +1,6 @@
 package cart
 
-import repository "wobble/backend/internal/repository/psql/cart"
+import repository "github.com/eeQuillibrium/wobble/internal/repository/psql/cart"
 
 type Controller struct {
 	r repository.ICartRepository

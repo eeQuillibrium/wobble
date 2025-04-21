@@ -3,30 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог товаров</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Магазин</title>
+    <link rel="stylesheet" href="/css/store/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<header>
-    <h1>Наш каталог</h1>
+<!-- Навигация и корзина -->
+<header class="header">
+    <nav class="navbar">
+        <div class="logo">Магазин</div>
+        <ul class="nav-links">
+            <li><a href="/">Главная</a></li>
+            <li><a href="/store/" class="active">Каталог</a></li>
+            <li><a href="/about/">О нас</a></li>
+        </ul>
+        <div class="cart-container">
+            <button id="cart-button">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </button>
+            <div class="cart-dropdown" id="cart-dropdown">
+                <div class="cart-items" id="cart-items">
+                    <!-- Товары будут добавляться сюда -->
+                </div>
+                <div class="cart-total">
+                    Итого: <span id="cart-total">0</span> ₽
+                </div>
+                <button class="checkout-btn">Оформить заказ</button>
+            </div>
+        </div>
+    </nav>
 </header>
 
+<!-- Основной контент -->
 <main class="products-container">
-    {{range .Products}}
-    <div class="product-card">
-        <img src="{{.ImageURL}}" alt="{{.Name}}" class="product-image">
-        <h2>{{.Name}}</h2>
-        <p class="description">{{.Description}}</p>
-        <p class="price">{{.Price}} руб.</p>
-        <button class="add-to-cart">В корзину</button>
+    <h1>Наши товары</h1>
+
+    <!-- Фильтры по категориям -->
+    <div class="filters">
+        <button class="filter-btn active" data-category="all">Все товары</button>
+        <button class="filter-btn" data-category="красная рыба">Красная рыба</button>
+        <button class="filter-btn" data-category="снеки">Снеки</button>
+        <button class="filter-btn" data-category="другое">Другое</button>
     </div>
-    {{end}}
+
+    <div class="products-grid">
+        {{range .Products}}
+        <div class="product-card" data-id="{{.ID}}" data-category="{{.Category}}">
+            <div class="product-image-container">
+                <img src="{{.ImageURL}}" alt="{{.Name}}" class="product-image">
+                <span class="product-category">{{.Category}}</span>
+            </div>
+            <div class="product-info">
+                <h3>{{.Name}}</h3>
+                <p class="product-description">{{.Description}}</p>
+                <div class="product-footer">
+                    <span class="product-price">{{.Price}} ₽</span>
+                    <button class="add-to-cart"
+                            data-id="{{.ID}}"
+                            data-name="{{.Name}}"
+                            data-price="{{.Price}}"
+                            data-image="{{.ImageURL}}">
+                        В корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
 </main>
 
-<footer>
-    <p>©2025 Магазин</p>
+<!-- Футер -->
+<footer class="footer">
+    <p>©2025 Магазин. Все права защищены.</p>
 </footer>
 
-<script src="/js/main.js"></script>
+<!-- Анимационный элемент для эффекта "летящего товара" -->
+<div id="fly-item" class="fly-item"></div>
+
+<script src="/js/store/cart.js"></script>
+<script src="/js/store/filters.js"></script>
+<script>
+    // Инициализация корзины при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('cart')) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
+    });
+</script>
 </body>
 </html>
