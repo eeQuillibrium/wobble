@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог товаров</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    <h1>Наш каталог</h1>
+</header>
+
+<main class="products-container">
+    {{range .Products}}
+    <div class="product-card">
+        <img src="{{.ImageURL}}" alt="{{.Name}}" class="product-image">
+        <h2>{{.Name}}</h2>
+        <p class="description">{{.Description}}</p>
+        <p class="price">{{.Price}} руб.</p>
+        <button class="add-to-cart">В корзину</button>
+    </div>
+    {{end}}
+</main>
+
+<footer>
+    <p>©2025 Магазин</p>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
