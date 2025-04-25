@@ -1,6 +1,7 @@
 # 🐟 Wobble – Доставка свежайшей рыбы
 
-![Логотип Wobble](https://via.placeholder.com/150x50?text=Wobble+Logo)  
+<img width="98" alt="Screenshot 2025-04-25 at 23 08 00" src="https://github.com/user-attachments/assets/b2285259-5821-469f-87b2-cc6d3a979ef2" />
+
 *Свежие морепродукты с доставкой прямо к вашему столу*
 
 ## 🌊 О проекте
