@@ -37,6 +37,7 @@ Wobble — это интернет-магазин по доставке свеж
 2. Добавьте в корзину
   <img width="1494" alt="Screenshot 2025-04-25 at 23 06 34" src="https://github.com/user-attachments/assets/e448c1b5-eb51-492d-abb0-15f67b74afcc" />
 3. Проверьте заказ в `/cart`
+   
 4. Оформите доставку
 
 ### Управление аккаунтом
