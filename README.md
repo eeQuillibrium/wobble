@@ -4,6 +4,7 @@
 *Свежие морепродукты с доставкой прямо к вашему столу*
 
 ## 🌊 О проекте
+<img width="1495" alt="Screenshot 2025-04-25 at 23 05 15" src="https://github.com/user-attachments/assets/5564dc00-c83d-45e0-81f8-79bafafb32d5" />
 
 Wobble — это интернет-магазин по доставке свежей рыбы и морепродуктов. Мы предлагаем самые свежие дары моря, доставляемые непосредственно от проверенных поставщиков.
 
@@ -30,7 +31,9 @@ Wobble — это интернет-магазин по доставке свеж
 
 ### Простое оформление
 1. Выберите товары в `/store`
+  <img width="1492" alt="Screenshot 2025-04-25 at 23 05 51" src="https://github.com/user-attachments/assets/4eb9abd4-91ee-400d-b62d-1f452cbeb69a" />
 2. Добавьте в корзину
+  <img width="1494" alt="Screenshot 2025-04-25 at 23 06 34" src="https://github.com/user-attachments/assets/e448c1b5-eb51-492d-abb0-15f67b74afcc" />
 3. Проверьте заказ в `/cart`
 4. Оформите доставку
 
