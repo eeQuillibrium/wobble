@@ -1,6 +1,6 @@
 package account
 
-import "wobble/backend/internal/controller/account"
+import "github.com/eeQuillibrium/wobble/internal/controller/account"
 
 type API struct {
 	ctrl account.IAccountController

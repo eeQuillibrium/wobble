@@ -2,7 +2,7 @@ package store
 
 import (
 	"context"
-	"wobble/backend/internal/models"
+	"github.com/eeQuillibrium/wobble/internal/models"
 )
 
 type IStoreRepository interface {

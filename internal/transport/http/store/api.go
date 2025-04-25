@@ -1,6 +1,6 @@
 package store
 
-import "wobble/backend/internal/controller/store"
+import "github.com/eeQuillibrium/wobble/internal/controller/store"
 
 type API struct {
 	ctrl store.IStoreController

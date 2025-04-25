@@ -1,10 +1,10 @@
 package psql
 
 import (
+	"github.com/eeQuillibrium/wobble/internal/repository/psql/account"
+	"github.com/eeQuillibrium/wobble/internal/repository/psql/cart"
+	"github.com/eeQuillibrium/wobble/internal/repository/psql/store"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"wobble/backend/internal/repository/psql/account"
-	"wobble/backend/internal/repository/psql/cart"
-	"wobble/backend/internal/repository/psql/store"
 )
 
 type Repository struct {

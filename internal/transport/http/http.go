@@ -2,8 +2,8 @@ package http
 
 import (
 	"context"
+	"github.com/eeQuillibrium/wobble/pkg/logger"
 	"github.com/gofiber/fiber/v3"
-	"wobble/backend/pkg/logger"
 )
 
 const cPort = "3000"

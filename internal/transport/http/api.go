@@ -1,11 +1,11 @@
 package http
 
 import (
-	"wobble/backend/internal/controller"
-	"wobble/backend/internal/transport/http/account"
-	"wobble/backend/internal/transport/http/cart"
-	"wobble/backend/internal/transport/http/index"
-	"wobble/backend/internal/transport/http/store"
+	"github.com/eeQuillibrium/wobble/internal/controller"
+	"github.com/eeQuillibrium/wobble/internal/transport/http/account"
+	"github.com/eeQuillibrium/wobble/internal/transport/http/cart"
+	"github.com/eeQuillibrium/wobble/internal/transport/http/index"
+	"github.com/eeQuillibrium/wobble/internal/transport/http/store"
 )
 
 type API struct {

@@ -2,8 +2,8 @@ package store
 
 import (
 	"context"
-	"wobble/backend/internal/models"
-	"wobble/backend/pkg/logger"
+	"github.com/eeQuillibrium/wobble/internal/models"
+	"github.com/eeQuillibrium/wobble/pkg/logger"
 )
 
 func (c Controller) GetProducts(ctx context.Context) ([]models.Product, error) {

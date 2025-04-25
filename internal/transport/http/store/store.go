@@ -1,8 +1,8 @@
 package store
 
 import (
+	"github.com/eeQuillibrium/wobble/pkg/logger"
 	"github.com/gofiber/fiber/v3"
-	"wobble/backend/pkg/logger"
 )
 
 func (a API) Store(c fiber.Ctx) error {
