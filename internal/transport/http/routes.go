@@ -1,0 +1,58 @@
+package http
+
+import (
+	"github.com/eeQuillibrium/wobble/internal/transport/http/middleware"
+	"github.com/gofiber/fiber/v3"
+)
+
+// InitHttp регистрирует все HTTP-роуты приложения.
+//
+// Структура API:
+// GET  /healthcheck       - общая проверка работы сервиса
+// GET  /                  - главная страница
+//
+// Группа account:
+// GET  /account/healthcheck - проверка подсистемы аккаунтов
+//
+// Группа cart:
+// GET  /cart/healthcheck    - проверка подсистемы корзины
+//
+// Группа store:
+// GET  /store/healthcheck   - проверка подсистемы магазина
+// GET  /store/              - основной интерфейс магазина
+//
+// Middleware:
+// Все middleware должны быть зарегистрированы до вызова этого метода.
+// Рекомендуемые middleware:
+//   - Логирование
+//   - Recovery
+//   - CORS
+//   - Rate Limiting
+func (s *Server) InitHttp() {
+	s.app.Get("/healthcheck", func(c fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
+	// Index
+	s.app.Get("/", s.api.index.Index)
+
+	// Account
+	account := s.app.Group("/account")
+
+	account.Get("/", s.api.account.IndexT, middleware.JWTAuthMiddleware())
+	account.Get("/auth", s.api.account.AuthT)
+	account.Get("/registration", s.api.account.RegisterT)
+
+	account.Post("/register", s.api.account.Register)
+	account.Post("/login", s.api.account.Auth)
+
+	// Cart
+	cart := s.app.Group("/cart")
+
+	cart.Get("healthcheck", s.api.cart.Healthcheck)
+
+	// Store
+	store := s.app.Group("/store")
+	store.Get("healthcheck", s.api.store.Healthcheck)
+	store.Get("/", s.api.store.Store)
+}
