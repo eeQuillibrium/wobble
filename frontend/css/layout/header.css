@@ -231,6 +231,10 @@ header .menu-dropdown-content a:hover {
     margin-top: 5px;
 }
 
+.header-right {
+    display: flex;
+}
+
 
 
 /* ? menu dropdown end */

@@ -24,17 +24,11 @@ function sidebarFunc() {
 }
 
 function searchModalFunc() {
-    const btnOpenSearch = document.querySelector(".search-button")
     const modalSearch = document.getElementsByClassName("modal-search")
     const modalSearchWrapper = document.getElementsByClassName("modal-wrapper")
     const btnCloseModalSearch = document.querySelector("#close-modal-search")
     const searchInput = document.querySelector(".modal-search .search input")
 
-
-    btnOpenSearch.addEventListener("click", function () {
-        modalSearch[0].style.visibility = "visible"
-        modalSearch[0].style.opacity = "1"
-    })
 
     btnCloseModalSearch.addEventListener("click", function () {
         modalSearch[0].style.visibility = "hidden"

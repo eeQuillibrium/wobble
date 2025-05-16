@@ -11,6 +11,7 @@ import (
 	"github.com/eeQuillibrium/wobble/internal/repository/psql"
 	internal_http "github.com/eeQuillibrium/wobble/internal/transport/http"
 	"github.com/eeQuillibrium/wobble/pkg/logger"
+	"github.com/eeQuillibrium/wobble/pkg/utils"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/gofiber/template/html/v2"
@@ -22,7 +23,6 @@ import (
 // DSN - строка подключения к PostgreSQL.
 // Формат: postgres://username:password@host:port/database?params
 // В production следует использовать переменные окружения или секреты.
-const DSN = "postgres://postgres:secret@localhost:5433/wobble?sslmode=disable"
 
 // InitDB создает пул подключений к PostgreSQL и проверяет его работоспособность.
 //
@@ -37,7 +37,7 @@ const DSN = "postgres://postgres:secret@localhost:5433/wobble?sslmode=disable"
 //   - Применяет миграции через applyMigrations()
 //   - Проверяет подключение через Ping()
 func InitDB(ctx context.Context) *pgxpool.Pool {
-	pool, err := pgxpool.New(ctx, DSN)
+	pool, err := pgxpool.New(ctx, utils.GetDSN())
 	if err != nil {
 		logger.Ctx(ctx).Log(zap.WarnLevel, "pool is down")
 	}
@@ -87,7 +87,10 @@ func InitServer(pool *pgxpool.Pool, app *fiber.App) internal_http.Server {
 //   - Настраивает маршрутизацию для SPA (если требуется)
 func NewFiberApp(engine fiber.Views) *fiber.App {
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		BodyLimit:       16 * 1024 * 1024, // 16MB
+		ReadBufferSize:  4096,             // 4KB буфер чтения
+		WriteBufferSize: 4096,             // 4KB буфер записи
+		Views:           engine,
 	})
 
 	app.Use(static.New("static/*", static.Config{

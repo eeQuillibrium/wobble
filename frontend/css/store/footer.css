@@ -1,244 +1,160 @@
-/* Footer Styles */
-.footer {
-    background-color: #000000;
-    color: #fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 0;
-    margin-top: 3rem;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
-
-/* Subscribe & Contact Row */
-.subscribe-contact-row {
-    background-color: #34495e;
-    padding: 2rem 0;
-}
-
-.subscribe-contact-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.subscribe-wrapper,
-.contact-wrapper {
-    flex: 1;
-    min-width: 300px;
-}
-
-/* Subscribe Section */
-.footer-subscribe-top {
-    margin-bottom: 1.5rem;
-}
-
-.subscribe-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #fff;
-}
-
-.subscribe-desc {
-    color: #ecf0f1;
-    margin-bottom: 1rem;
-}
-
-.footer-subscribe form {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.footer-subscribe input[type="text"] {
-    flex: 1;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.btn {
-    background-color: #3498db;
+/* ! subscribe start */
+.footer .subscribe-contact-row {
+    background-color: #000;
     color: white;
-    border: none;
-    padding: 0 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+    padding: 80px 0;
 }
 
-.btn:hover {
-    background-color: #2980b9;
-}
 
-.privacy-text {
-    font-size: 0.8rem;
-    color: #bdc3c7;
-}
-
-.privacy-text a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-/* Contact Section */
-.footer-contact-top {
-    margin-bottom: 1.5rem;
-}
-
-.contact-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #fff;
-}
-
-.contact-desc {
-    color: #ecf0f1;
-}
-
-.download-app {
+.footer .subscribe-contact-wrapper {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.download-app img {
-    height: 40px;
-}
-
-/* Widgets Row */
-.widgets-row {
-    padding: 3rem 0;
-    background-color: #2c3e50;
-}
-
-.footer-widgets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.brand-info {
-    flex: 1;
-    min-width: 250px;
-}
-
-.widget-nav-menu {
-    flex: 0 0 200px;
-}
-
-.footer-logo .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
-    margin-bottom: 1rem;
-    display: inline-block;
-}
-
-.footer-desc {
-    color: #bdc3c7;
-    margin-bottom: 1rem;
-}
-
-.footer-contact p {
-    color: #bdc3c7;
-}
-
-.footer-contact a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.widget-nav-menu h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #fff;
-}
-
-.menu-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu-list li {
-    margin-bottom: 0.5rem;
-}
-
-.menu-list a {
-    color: #bdc3c7;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.menu-list a:hover {
-    color: #3498db;
-}
-
-/* Copyright Row */
-.copyright-row {
-    background-color: #1a252f;
-    padding: 1.5rem 0;
-}
-
-.footer-copyright {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+    column-gap: 200px;
 }
 
-.site-copyright p {
-    color: #bdc3c7;
-    font-size: 0.9rem;
-    margin: 0;
+.footer .subscribe-title,
+.footer .contact-title {
+    font-size: 30px;
+    max-width: 500px;
+    font-weight: 500;
+    line-height: 1.2;
 }
 
-.footer-copyright img {
-    height: 24px;
+
+.footer .subscribe-desc,
+.footer .contact-desc {
+    font-size: 14px;
+    opacity: 0.6;
+    margin-top: 5px;
 }
 
-.footer-menu-list {
+.footer .footer-subscribe-bottom,
+.footer .footer-contact-bottom {
+    margin-top: 40px;
+}
+
+
+.footer .footer-subscribe-bottom form {
     display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 1rem;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.footer-menu-list a {
-    color: #bdc3c7;
-    text-decoration: none;
-    font-size: 0.9rem;
+.footer .footer-subscribe-bottom form>input {
+    flex: 1;
+    height: 48px;
+    border: none;
 }
 
-.footer-menu-list a:hover {
-    color: #3498db;
+.footer .footer-subscribe-bottom form>button {
+    height: 48px;
+    border-color: #fff;
+    background-color: #000;
+    color: #fff;
+
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .subscribe-contact-wrapper {
-        flex-direction: column;
-    }
-
-    .footer-widgets {
-        flex-direction: column;
-    }
-
-    .footer-copyright {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .footer-menu-list {
-        justify-content: center;
-    }
+.footer .privacy-text,
+.footer .privacy-text a {
+    font-size: 10px;
+    color: #75767c;
+    margin-top: 5px;
+    font-weight: 500;
 }
+
+.footer .footer-contact-bottom .download-app {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    transition: all 0.5s ease-in;
+}
+
+/* ! subscribe end */
+
+
+/* ! widgets start */
+.widgets-row {
+    padding: 60px 0;
+    border: 1px solid #dee0ea;
+}
+
+.widgets-row .footer-widgets {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.widgets-row .footer-widgets>div {
+    flex: 1;
+}
+
+.widgets-row .footer-widgets .brand-info {
+    flex: 3;
+}
+
+.footer-widgets .brand-info .footer-desc {
+    width: 400px;
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+.footer-widgets .brand-info .footer-contact {
+    font-size: 14px;
+}
+
+.footer-widgets .widget-nav-menu h4 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.footer-widgets .widget-nav-menu ul {
+    margin-top: 20px;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.footer-widgets .widget-nav-menu ul li a {
+    transition: .2s ease all;
+}
+
+
+.footer-widgets .widget-nav-menu ul li a:hover {
+    opacity: 0.5;
+}
+
+
+/* ! widgets end */
+
+
+/*! copyright start  */
+.footer-copyright {
+    margin: 40px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer-copyright .site-copyright {
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+.footer-copyright .footer-menu {
+    margin-left: auto;
+}
+
+.footer-copyright .footer-menu-list {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    column-gap: 10px;
+}
+
+.footer-copyright .footer-menu-list .list-item:not(:last-child) {
+    padding-right: 10px;
+    border-right: 1px solid #dee0ea;
+}
+
+/*! copyright end  */

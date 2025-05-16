@@ -5,9 +5,174 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой аккаунт - Wobble</title>
     <link rel="stylesheet" href="/css/account/account.css">
+    <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Базовые стили для работы до загрузки основного CSS */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .account-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .account-sidebar {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .account-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(19, 103, 239, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #1367ef;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #ff4d4f;
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem;
+            text-align: center;
+        }
+        .profile-info p {
+            margin-bottom: 15px;
+        }
+        #logout-btn {
+            color: #ff4d4f;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        #logout-btn:hover {
+            background-color: rgba(255, 77, 79, 0.1);
+        }
+    </style>
 </head>
 <body>
+<header>
+    <div class="global-notification">
+        <div class="container">
+            <p>
+                ВЕСЕННЯЯ РАСПРОДАЖА НА СИНЮЮ РЫБУ В 50%! <a href="/store">ЗАКУПИТЬСЯ</a>
+            </p>
+        </div>
+    </div>
+    <div class="header-row">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="header-mobile">
+                    <i class="bi bi-list" id="btn-menu"></i>
+                </div>
+                <div class="header-left">
+                    <a href="/" class="logo">Wobble</a>
+                </div>
+                <div class="header-center" id="sidebar">
+                    <nav class="navigation">
+                        <ul class="menu-list">
+                            <li class="menu-list-item megamenu-wrapper">
+                                <a href="/store" class="menu-link">Магазин
+                                    <i class="bi bi-chevron-down"></i>
+                                </a>
+                                <div class="menu-dropdown-wrapper">
+                                    <div class="menu-dropdown-megamenu">
+                                        <div class="megamenu-links">
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Свежая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Копченая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">Филе рыбы</h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="megamenu-single">
+                                            <a href="#">
+                                                <img src="/img/wobble-sign.png" alt="" />
+                                            </a>
+                                            <h3 class="megamenu-single-title">
+                                                Успевайте купить рыбку по классной цене!
+                                            </h3>
+                                            <h4 class="megamenu-single-subtitle">
+                                                Всегда свежие продукты
+                                            </h4>
+                                            <a href="#" class="megamenu-single-button btn btn-sm">Купить</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="html/blog" class="menu-link">О нас</a>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="html/contact" class="menu-link">Поддержка</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <i class="bi-x-circle" id="close-sidebar"></i>
+                </div>
+                <div class="header-right">
+                    <div class="header-right-links">
+                        <a href="/account" id="accountLink">
+                            <i class="bi bi-person"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+</div>
 <div class="account-container">
     <!-- Боковое меню -->
     <div class="account-sidebar">
@@ -25,17 +190,16 @@
         <!-- Вкладка профиля -->
         <div id="profile" class="tab-content active">
             <h3>Личные данные</h3>
-            <div class="profile-info">
-                <p><strong>Имя:</strong> <span id="user-name">Иван Иванов</span></p>
-                <p><strong>Email:</strong> <span id="user-email">user@example.com</span></p>
-            </div>
+                <p><strong>Имя:</strong> <span id="user-name">Загрузка...</span></p>
+                <p><strong>Email:</strong> <span id="user-email">Загрузка...</span></p>
+                <p><strong>Логин:</strong> <span id="user-login">Загрузка...</span></p>
         </div>
 
         <!-- Вкладка заказов -->
         <div id="orders" class="tab-content">
             <h3>История заказов</h3>
             <div class="orders-list" id="orders-list">
-                <!-- Заказы будут загружаться через JS -->
+                <div class="loading-spinner"></div>
             </div>
         </div>
 
@@ -44,10 +208,10 @@
             <h3>Корзина</h3>
             <div class="account-cart-container">
                 <div class="account-cart-items" id="account-cart-items">
-                    <!-- Товары из корзины -->
+                    <div class="loading-spinner"></div>
                 </div>
                 <div class="account-cart-summary">
-                    <p>Итого: <span id="account-cart-total">0</span> ₽</p>
+                    <p>Итого: <span id="account-cart-total">0.00</span> ₽</p>
                     <button class="checkout-btn">Оформить заказ</button>
                 </div>
             </div>
@@ -56,5 +220,8 @@
 </div>
 
 <script src="/js/account/account.js"></script>
+<script>
+
+</script>
 </body>
 </html>

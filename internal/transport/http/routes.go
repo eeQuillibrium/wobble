@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/eeQuillibrium/wobble/internal/transport/http/middleware"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
 // InitHttp регистрирует все HTTP-роуты приложения.
@@ -29,6 +30,10 @@ import (
 //   - CORS
 //   - Rate Limiting
 func (s *Server) InitHttp() {
+	s.app.Use(recover.New(recover.Config{
+		EnableStackTrace: true,
+	}))
+
 	s.app.Get("/healthcheck", func(c fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
@@ -45,6 +50,9 @@ func (s *Server) InitHttp() {
 
 	account.Post("/register", s.api.account.Register)
 	account.Post("/login", s.api.account.Auth)
+	account.Get("/GetUser", s.api.account.GetUser, middleware.JWTAuthMiddleware())
+	account.Get("/GetOrders", s.api.account.GetOrders, middleware.JWTAuthMiddleware())
+	account.Post("/CreateOrder", s.api.account.CreateOrder, middleware.JWTAuthMiddleware())
 
 	// Cart
 	cart := s.app.Group("/cart")
