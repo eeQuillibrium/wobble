@@ -47,6 +47,7 @@ func (s *Server) InitHttp() {
 	account.Get("/", s.api.account.IndexT, middleware.JWTAuthMiddleware())
 	account.Get("/auth", s.api.account.AuthT)
 	account.Get("/registration", s.api.account.RegisterT)
+	account.Get("/changeuser", s.api.account.ChangeUserInfoT)
 
 	account.Post("/register", s.api.account.Register)
 	account.Post("/login", s.api.account.Auth)
@@ -54,6 +55,7 @@ func (s *Server) InitHttp() {
 	account.Get("/GetUser", s.api.account.GetUser, middleware.JWTAuthMiddleware())
 	account.Get("/GetOrders", s.api.account.GetOrders, middleware.JWTAuthMiddleware())
 	account.Post("/CreateOrder", s.api.account.CreateOrder, middleware.JWTAuthMiddleware())
+	account.Post("/UpdateUser", s.api.account.UpdateUser, middleware.JWTAuthMiddleware())
 
 	// Blog
 	blog := s.app.Group("/blog")

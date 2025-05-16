@@ -13,3 +13,7 @@ func (a *API) RegisterT(c fiber.Ctx) error {
 func (a *API) IndexT(c fiber.Ctx) error {
 	return c.Render("account", fiber.Map{})
 }
+
+func (a *API) ChangeUserInfoT(c fiber.Ctx) error {
+	return c.Render("changeuser", fiber.Map{})
+}

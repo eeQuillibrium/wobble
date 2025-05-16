@@ -17,7 +17,7 @@ func (a *Account) Register(ctx context.Context, reg dto.Register, passHash []byt
 	return id, nil
 }
 
-func (a *Account) Login(ctx context.Context, login string) ([]byte, uint64, error) {
+func (a *Account) GetLoginInfo(ctx context.Context, login string) ([]byte, uint64, error) {
 	var user struct {
 		ID       uint64
 		Password []byte

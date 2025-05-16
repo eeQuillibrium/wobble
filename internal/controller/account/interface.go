@@ -12,4 +12,5 @@ type IAccountController interface {
 	GetUserByID(ctx context.Context, userID uint64) (models.User, error)
 	GetOrdersByUserID(ctx context.Context, userID uint64) ([]models.Order, error)
 	CreateOrder(ctx context.Context, userID uint64, order dto.Order) error
+	UpdateUser(ctx context.Context, userID uint64, upd dto.Update) error
 }

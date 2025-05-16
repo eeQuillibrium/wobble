@@ -423,3 +423,46 @@ body {
     font-size: 16px;
     padding-top: 1.2rem;
 }
+
+/* Стили для кнопки изменения профиля */
+.profile-edit-btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: #1367ef;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(19, 103, 239, 0.2);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.profile-edit-btn:hover {
+    background-color: #0d5cd8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(19, 103, 239, 0.3);
+}
+
+.profile-edit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(19, 103, 239, 0.2);
+}
+
+/* Иконка (если решите добавить) */
+.profile-edit-btn i {
+    margin-right: 8px;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .profile-edit-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+}

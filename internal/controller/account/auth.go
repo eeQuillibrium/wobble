@@ -17,7 +17,7 @@ func (c *Controller) Register(ctx context.Context, reg dto.Register) (uint64, er
 }
 
 func (c *Controller) Auth(ctx context.Context, log dto.Login) (string, uint64, error) {
-	dbPass, userID, err := c.r.Login(ctx, log.Login)
+	dbPass, userID, err := c.r.GetLoginInfo(ctx, log.Login)
 	if err != nil {
 		return "", 0, fmt.Errorf("error w/ getting password: %w", err)
 	}

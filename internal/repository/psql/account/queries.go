@@ -12,7 +12,7 @@ const queryGetUser = `
 `
 
 const queryGetUserByID = `
-	SELECT id, name, email, login FROM users.list
+	SELECT id, name, email, login, password FROM users.list
 	WHERE id = $1
 `
 
@@ -51,4 +51,10 @@ const queryCreateOrder = `
 INSERT INTO users.orders(user_id, status, total, delivery_address) 
 VALUES ($1, 'Активный', $2, $3)
 RETURNING id
+`
+
+const queryUpdateUser = `
+UPDATE users.list
+SET name = $2, email = $3, login = $4
+WHERE id = $1
 `

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменение данных - Wobble</title>
+    <link rel="stylesheet" href="/css/cart/cart.css">
+    <link rel="stylesheet" href="/css/toast/toast.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Временные стили до загрузки основного CSS */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .account-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .account-sidebar {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .account-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: #1367ef;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .btn-primary:hover {
+            background: #0d5cd8;
+        }
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .current-value {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="global-notification">
+        <div class="container">
+            <p>
+                ВЕСЕННЯЯ РАСПРОДАЖА НА СИНЮЮ РЫБУ В 50%! <a href="/store">ЗАКУПИТЬСЯ</a>
+            </p>
+        </div>
+    </div>
+    <div class="header-row">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="header-mobile">
+                    <i class="bi bi-list" id="btn-menu"></i>
+                </div>
+                <div class="header-left">
+                    <a href="/" class="logo">Wobble</a>
+                </div>
+                <div class="header-center" id="sidebar">
+                    <nav class="navigation">
+                        <ul class="menu-list">
+                            <li class="menu-list-item megamenu-wrapper">
+                                <a href="/store" class="menu-link">Магазин
+                                    <i class="bi bi-chevron-down"></i>
+                                </a>
+                                <div class="menu-dropdown-wrapper">
+                                    <div class="menu-dropdown-megamenu">
+                                        <div class="megamenu-links">
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Свежая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Копченая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">Филе рыбы</h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="megamenu-single">
+                                            <a href="#">
+                                                <img src="/img/wobble-sign.png" alt="" />
+                                            </a>
+                                            <h3 class="megamenu-single-title">
+                                                Успевайте купить рыбку по классной цене!
+                                            </h3>
+                                            <h4 class="megamenu-single-subtitle">
+                                                Всегда свежие продукты
+                                            </h4>
+                                            <a href="#" class="megamenu-single-button btn btn-sm">Купить</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="/blog" class="menu-link">О нас</a>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="/contact" class="menu-link">Поддержка</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <i class="bi-x-circle" id="close-sidebar"></i>
+                </div>
+                <div class="header-right">
+                    <div class="header-right-links">
+                        <a href="/account" id="accountLink">
+                            <i class="bi bi-person"></i>
+                        </a>
+                    </div>
+                    <div class="cart-container">
+                        <button id="cart-button">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count">0</span>
+                        </button>
+                        <div class="cart-dropdown" id="cart-dropdown">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Товары будут добавляться сюда -->
+                            </div>
+                            <div class="cart-total">
+                                Итого: <span id="cart-total">0</span> ₽
+                            </div>
+                            <button class="checkout-btn">Оформить заказ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="account-container">
+    <!-- Основное содержимое -->
+    <div class="account-content">
+        <div class="form-container">
+            <h2>Изменение персональных данных</h2>
+            <p>Для изменения данных введите новые значения и подтвердите текущим паролем</p>
+
+            <form id="change-user-form">
+                <div class="form-group">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" id="name" class="form-control">
+                    <div class="current-value" id="current-name"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login" class="form-label">Логин</label>
+                    <input type="text" id="login" class="form-control">
+                    <div class="current-value" id="current-login"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control">
+                    <div class="current-value" id="current-email"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Текущий пароль (обязательно)</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn">Сохранить изменения</button>
+            </form>
+
+            <div id="error-message" class="error-message" style="display: none; margin-top: 1rem;"></div>
+        </div>
+    </div>
+</div>
+<!-- ! footer start -->
+<section class="footer">
+    <div class="subscribe-contact-row">
+        <div class="container">
+            <div class="subscribe-contact-wrapper">
+                <div class="subscribe-wrapper">
+                    <div class="footer-subscribe">
+                        <div class="footer-subscribe-top">
+                            <h3 class="subscribe-title">
+                                Дайте нам свой email для информации о новых акциях
+                            </h3>
+                            <p class="subscribe-desc">
+                                Мы вышлем вам скидку 10% на заказ от 2000Р
+                            </p>
+                        </div>
+                        <div class="footer-subscribe-bottom">
+                            <form>
+                                <input type="text" placeholder="введите свой email адрес" />
+                                <button class="btn">Подписаться</button>
+                            </form>
+                            <p class="privacy-text">
+                                Подписываясь вы соглашаетесь с
+                                <a href="#">Terms & Conditions and Privacy & Cookies Policy.</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-wrapper">
+                    <div class="footer-contact-top">
+                        <h3 class="contact-title">Нужна помощь? <br>
+                            +8(777)-777-77-77
+                        </h3>
+                        <p class="contact-desc">Мы открыты 8:00 – 19:00
+                        </p>
+                    </div>
+                    <div class="footer-contact-bottom">
+                        <div class="download-app">
+                            <a href="#">
+                                <img src="/img/footer/app-store.png" alt="">
+                            </a>
+                            <a href="#">
+                                <img src="/img/footer/google-play.png" alt="">
+                            </a>
+                        </div>
+                        <p class="privacy-text">
+                            <strong>Приложение для загрузки:</strong> Попробуйте удобный интерфейс для покупок
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="widgets-row">
+        <div class="container">
+            <div class="footer-widgets">
+                <div class="brand-info">
+                    <div class="footer-logo">
+                        <a href="/" class="logo">Wobble</a>
+                    </div>
+                    <div class="footer-desc">
+                        С заботой о качестве продукции и клиентах.
+                    </div>
+                    <div class="footer-contact">
+                        <p>
+                            <a href="tel:123456789"> +8(777)-777-77-77 </a> -
+                            <a href="mailto:info@example.com">wobble@mail.ru</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="widget-nav-menu">
+                    <h4>Информация</h4>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/blog">О нас</a>
+                        </li>
+                        <li>
+                            <a href="#">Политика конфиденциальности</a>
+                        </li>
+                        <li>
+                            <a href="#">Политика возврата</a>
+                        </li>
+                        <li>
+                            <a href="#">Политика доставки</a>
+                        </li>
+                        <li>
+                            <a href="#">Dropshipping</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="widget-nav-menu">
+                    <h4>Аккаунт</h4>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="#">Дэшборд</a>
+                        </li>
+                        <li>
+                            <a href="#">Мои заказы</a>
+                        </li>
+                        <li>
+                            <a href="#">Избранное</a>
+                        </li>
+                        <li>
+                            <a href="#">Детали аккаунта</a>
+                        </li>
+                        <li>
+                            <a href="#">Отследить мои заказы</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="widget-nav-menu">
+                    <h4>Магазин</h4>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="#">Поступления</a>
+                        </li>
+                        <li>
+                            <a href="#">Популярное</a>
+                        </li>
+                        <li>
+                            <a href="#">Скидка</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="widget-nav-menu">
+                    <h4>Категории</h4>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="#">Сырая рыба</a>
+                        </li>
+                        <li>
+                            <a href="#">Копчености</a>
+                        </li>
+                        <li>
+                            <a href="#">Сушеная рыба</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copyright-row">
+        <div class="copyright-row">
+            <div class="container">
+                <div class="footer-copyright">
+                    <div class="site-copyright">
+                        <p>
+                            Copyright 2022 © E-Commerce Theme. All right reserved.
+                            Powered By Sinan Sarıçayır.
+                        </p>
+                    </div>
+                    <a href="#">
+                        <img src="/img/footer/cards.png" alt="">
+                    </a>
+                    <div class="footer-menu">
+                        <ul class="footer-menu-list">
+                            <li class="list-item">
+                                <a href="#">Privacy Policy</a>
+                            </li>
+                            <li class="list-item">
+                                <a href="#">Terms and Conditions</a>
+                            </li>
+                            <li class="list-item">
+                                <a href="#">Returns Policy</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="toast" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <span class="toast-message"></span>
+    </div>
+    <div class="toast-progress"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Загрузка текущих данных пользователя
+        loadUserData();
+
+        // Обработка отправки формы
+        const form = document.getElementById('change-user-form');
+        form.addEventListener('submit', handleFormSubmit);
+
+        // Загрузка данных пользователя
+        async function loadUserData() {
+            try {
+                const response = await fetch('/account/GetUser', {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки данных');
+                }
+
+                const userData = await response.json();
+
+                // Заполняем текущие значения
+                document.getElementById('current-name').textContent = `Текущее значение: ${userData.name || 'не указано'}`;
+                document.getElementById('current-login').textContent = `Текущее значение: ${userData.login}`;
+                document.getElementById('current-email').textContent = `Текущее значение: ${userData.email}`;
+
+                // Устанавливаем значения по умолчанию в поля ввода
+                document.getElementById('name').value = userData.name || '';
+                document.getElementById('login').value = userData.login || '';
+                document.getElementById('email').value = userData.email || '';
+
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showError('Не удалось загрузить данные пользователя');
+            }
+        }
+
+
+
+        // Обработка отправки формы
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+
+            try {
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    login: document.getElementById('login').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    password: document.getElementById('password').value
+                };
+
+                // Валидация
+                if (!formData.password) {
+                    throw new Error('Необходимо ввести текущий пароль');
+                }
+
+                // Если все поля пустые
+                if (!formData.name && !formData.login && !formData.email) {
+                    throw new Error('Не указано ни одного поля для изменения');
+                }
+
+                const response = await fetch('/account/UpdateUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при обновлении данных');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess("Данные успешно измененены!")
+                    window.location.assign("/account");
+                } else {
+                    throw new Error(result.message || 'Неизвестная ошибка');
+                }
+
+            } catch (error) {
+                console.error('Update error:', error);
+                showError(error.message || 'Ошибка при обновлении данных');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Показать сообщение об ошибке
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+        function showSuccess(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = toast.querySelector('.toast-message');
+
+            // Устанавливаем сообщение
+            toastMessage.textContent = message;
+
+            // Показываем toast
+            toast.classList.add('active');
+
+            // Автоматическое скрытие через 3 секунды
+            setTimeout(() => {
+                toast.classList.remove('active');
+
+                // Сброс анимации прогресса
+                setTimeout(() => {
+                    toast.querySelector('.toast-progress').style.animation = 'none';
+                    setTimeout(() => {
+                        toast.querySelector('.toast-progress').style.animation = '';
+                    }, 10);
+                }, 300);
+            }, 3000);
+        }
+    });
+
+</script>
+<script src="/js/cart/cart.js" type="module"></script>
+
+</body>
+</html>
