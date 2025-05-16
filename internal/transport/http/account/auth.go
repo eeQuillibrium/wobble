@@ -3,6 +3,7 @@ package account
 import (
 	"github.com/eeQuillibrium/wobble/internal/dto"
 	"github.com/eeQuillibrium/wobble/pkg/logger"
+	"github.com/eeQuillibrium/wobble/pkg/utils"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -59,4 +60,11 @@ func (a *API) Auth(c fiber.Ctx) error {
 		"token":   token,
 		"user_id": userID,
 	})
+}
+
+func (a *API) Logout(c fiber.Ctx) error {
+	utils.ClearCookies(c, "jwt")
+
+	return c.Redirect().To("/")
+
 }

@@ -16,6 +16,159 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация корзины
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+    // Добавляем в начало файла (после объявления cart)
+    let modal = null;
+    let selectedAddress = '';
+
+    // Функция создания модального окна
+    function createOrderModal() {
+        const modalHTML = `
+    <div class="modal-overlay" id="order-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Оформление заказа</h2>
+            <div class="form-group">
+                <label for="address-input">Адрес доставки</label>
+                <input type="text" id="address-input" placeholder="Введите ваш адрес...">
+                <div id="address-suggestions" class="suggestions-container"></div>
+            </div>
+            <button id="confirm-order" class="btn-primary">Подтвердить заказ</button>
+        </div>
+    </div>
+    `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        modal = document.getElementById('order-modal');
+
+        // Инициализация поиска адреса (аналогично предыдущему примеру)
+        initAddressAutocomplete();
+
+        // Закрытие модального окна
+        modal.querySelector('.close-modal').addEventListener('click', closeModal);
+        modal.querySelector('#confirm-order').addEventListener('click', submitOrder);
+
+        // Закрытие при клике вне окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
+
+    function initAddressAutocomplete() {
+        const addressInput = document.getElementById('address-input');
+        const suggestionsContainer = document.getElementById('address-suggestions');
+
+        addressInput.addEventListener('input', async function() {
+            const query = this.value.trim();
+
+            if (query.length < 3) {
+                suggestionsContainer.innerHTML = '';
+                return;
+            }
+
+            try {
+                // Используем API DaData (замените YOUR_TOKEN)
+                const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Token YOUR_DADATA_API_KEY'
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        count: 5,
+                        locations: [{ country: 'Россия' }]
+                    })
+                });
+
+                const data = await response.json();
+                suggestionsContainer.innerHTML = '';
+
+                data.suggestions.forEach(suggestion => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = suggestion.value;
+                    div.addEventListener('click', () => {
+                        addressInput.value = suggestion.value;
+                        selectedAddress = suggestion.value;
+                        suggestionsContainer.innerHTML = '';
+                    });
+                    suggestionsContainer.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Address search error:', error);
+            }
+        });
+    }
+
+    function openModal() {
+        if (!modal) createOrderModal();
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    async function submitOrder() {
+        if (!selectedAddress) {
+            showError('Пожалуйста, укажите адрес доставки');
+            return;
+        }
+
+        try {
+            showLoading();
+
+            const orderItems = cart.map(item => ({
+                id: parseInt(item.id),
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                imageUrl: item.image
+            }));
+
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            const response = await fetch('/CreateOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: orderItems,
+                    totalAmount: totalAmount,
+                    deliveryAddress: selectedAddress
+                })
+            });
+
+            if (!response.ok) throw new Error('Ошибка при оформлении заказа');
+
+            const result = await response.json();
+            if (!result.success) throw new Error(result.message || 'Ошибка сервера');
+
+            // Очищаем корзину после успешного заказа
+            cart = [];
+            localStorage.removeItem('cart');
+            updateAccountCart();
+            closeModal();
+
+            // Показываем уведомление об успехе
+            alert('Заказ успешно оформлен!');
+
+            // Переключаем на вкладку заказов
+            document.querySelector('[data-tab="orders"]').click();
+            await loadAccountData();
+
+        } catch (error) {
+            showError(error.message || 'Ошибка при оформлении заказа');
+        } finally {
+            hideLoading();
+        }
+    }
+
+
     // Загрузка данных пользователя и заказов
     loadAccountData();
 
@@ -229,13 +382,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция выхода
     async function logout() {
         try {
+            localStorage.removeItem('cart');
+
             const response = await fetch('/account/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
 
             if (response.ok) {
-                localStorage.removeItem('cart');
                 window.location.href = '/';
             } else {
                 showError('Не удалось выйти. Попробуйте снова.');

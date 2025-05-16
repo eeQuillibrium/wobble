@@ -8,6 +8,7 @@ type IAccountAPI interface {
 	RegisterT(c fiber.Ctx) error
 
 	Auth(c fiber.Ctx) error
+	Logout(c fiber.Ctx) error
 	Register(c fiber.Ctx) error
 	GetUser(c fiber.Ctx) error
 	GetOrders(c fiber.Ctx) error

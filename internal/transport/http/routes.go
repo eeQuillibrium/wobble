@@ -50,6 +50,7 @@ func (s *Server) InitHttp() {
 
 	account.Post("/register", s.api.account.Register)
 	account.Post("/login", s.api.account.Auth)
+	account.Post("/logout", s.api.account.Logout)
 	account.Get("/GetUser", s.api.account.GetUser, middleware.JWTAuthMiddleware())
 	account.Get("/GetOrders", s.api.account.GetOrders, middleware.JWTAuthMiddleware())
 	account.Post("/CreateOrder", s.api.account.CreateOrder, middleware.JWTAuthMiddleware())
