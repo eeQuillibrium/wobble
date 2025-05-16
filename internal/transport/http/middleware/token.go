@@ -12,9 +12,7 @@ func JWTAuthMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		tokenString := extractToken(c)
 		if tokenString == "" {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Bearer token is required",
-			})
+			return c.Redirect().To("/account/auth")
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

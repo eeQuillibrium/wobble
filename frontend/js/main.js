@@ -63,33 +63,3 @@ if (modal) {
 
 
 //! modal dialog end
-
-document.getElementById('accountLink').addEventListener('click', async (e) => {
-    e.preventDefault();
-
-    try {
-        const response = await fetch('/account', {
-            method: 'GET',
-            credentials: 'include'
-        });
-
-        if (response.ok) {
-            window.location.href = '/account';
-        } else {
-            window.location.href = '/account/auth';
-        }
-    } catch (error) {
-        window.location.href = '/account/auth';
-    }
-});
-
-function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=').map(c => c.trim());
-        if (cookieName === name) {
-            return decodeURIComponent(cookieValue);
-        }
-    }
-    return null;
-}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - Wobble | Свежайшая рыба с доставкой</title>
+    <link rel="stylesheet" href="/css/blog/blog.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
+    <style>
+        /* Временные стили до загрузки основного CSS */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/img/fish-market.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .section {
+            padding: 4rem 0;
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .value-card {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <!-- Ваше стандартное меню из account.html -->
+    <div class="header-row">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="header-left">
+                    <a href="/" class="logo">Wobble</a>
+                </div>
+                <div class="header-center">
+                    <nav class="navigation">
+                        <ul class="menu-list">
+                            <li><a href="/store">Магазин</a></li>
+                            <li><a href="/blog" class="active">О нас</a></li>
+                            <li><a href="/contact">Поддержка</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="header-right">
+                    <a href="/account" id="accountLink"><i class="bi bi-person"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Герой-секция -->
+    <section class="hero">
+        <div class="container">
+            <h1>Wobble - свежесть, которую вы заслуживаете</h1>
+            <p class="lead">Доставляем лучшую рыбу в Москве с 2018 года</p>
+        </div>
+    </section>
+
+    <!-- О компании -->
+    <section class="section">
+        <div class="container">
+            <h2>Наша история</h2>
+            <p>Wobble начал свою работу с небольшого рыбного магазина в центре Москвы. Сегодня мы - крупнейший онлайн-рынок свежей рыбы с собственной логистической сетью. Наше имя стало синонимом качества и надежности среди московских гурманов.</p>
+
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-fish" style="font-size: 2rem; color: #1367ef; margin-bottom: 1rem;"></i>
+                    <h3>Только свежая рыба</h3>
+                    <p>Мы работаем напрямую с рыболовными хозяйствами, минуя посредников. Это гарантирует свежесть и лучшие цены.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-award" style="font-size: 2rem; color: #1367ef; margin-bottom: 1rem;"></i>
+                    <h3>Контроль качества</h3>
+                    <p>Каждая партия проходит строгий контроль перед отправкой. Мы отвергаем до 30% поставок, не соответствующих нашим стандартам.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-shipping-fast" style="font-size: 2rem; color: #1367ef; margin-bottom: 1rem;"></i>
+                    <h3>Бережная доставка</h3>
+                    <p>Используем специальные термоконтейнеры, сохраняющие идеальную температуру на всем пути к вашему столу.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Наши поставщики -->
+    <section class="section" style="background: #f5f5f5;">
+        <div class="container">
+            <h2>Наши поставщики</h2>
+            <p>Мы сотрудничаем только с проверенными рыболовными хозяйствами:</p>
+            <ul>
+                <li>Экологически чистое рыболовство "Северные воды" (Мурманская область)</li>
+                <li>Фермерское хозяйство "Дальневосточный улов" (Приморский край)</li>
+                <li>Эко-ферма "Акватория" (Астраханская область)</li>
+            </ul>
+            <p>Все наши партнеры имеют сертификаты MSC и соответствуют стандартам устойчивого рыболовства.</p>
+        </div>
+    </section>
+
+    <!-- Доставка -->
+    <section class="section">
+        <div class="container">
+            <h2>Доставка по Москве</h2>
+            <p>Мы доставляем заказы в день оформления или на следующее утро - вы получаете действительно свежий продукт.</p>
+            <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+                <div style="flex: 1;">
+                    <h3>Как мы доставляем</h3>
+                    <ol>
+                        <li>Рыба поступает к нам утром</li>
+                        <li>Сортировка и упаковка в течение 2 часов</li>
+                        <li>Доставка в термоконтейнерах при +2°C</li>
+                        <li>Курьер звонит за 30 минут</li>
+                    </ol>
+                </div>
+                <div style="flex: 1;">
+                    <h3>Зоны доставки</h3>
+                    <ul>
+                        <li>В пределах МКАД - 299₽</li>
+                        <li>До 10 км от МКАД - 499₽</li>
+                        <li>Самовывоз из нашего магазина - бесплатно</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2023 Wobble - Интернет-магазин свежей рыбы</p>
+        <p>Москва, ул. Рыбная, 15 | +7 (495) 123-45-67</p>
+    </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
