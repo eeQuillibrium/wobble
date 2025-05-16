@@ -55,12 +55,21 @@ func (s *Server) InitHttp() {
 	account.Get("/GetOrders", s.api.account.GetOrders, middleware.JWTAuthMiddleware())
 	account.Post("/CreateOrder", s.api.account.CreateOrder, middleware.JWTAuthMiddleware())
 
-	//Blog
+	// Blog
 	blog := s.app.Group("/blog")
 
 	blog.Get("/", func(c fiber.Ctx) error {
 		return c.Render("blog", fiber.Map{})
 	})
+
+	// Contact
+	contact := s.app.Group("/contact")
+
+	contact.Get("/", func(c fiber.Ctx) error {
+		return c.Render("contact", fiber.Map{})
+	})
+
+	contact.Post("/CreateAppeal", s.api.contact.CreateAppeal)
 
 	// Cart
 	cart := s.app.Group("/cart")

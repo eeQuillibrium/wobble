@@ -5,8 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wobble</title>
     <link rel="stylesheet" href="/css/auth/auth.css">
+    <link rel="stylesheet" href="/css/cart/cart.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
+<header>
+    <div class="global-notification">
+        <div class="container">
+            <p>
+                ВЕСЕННЯЯ РАСПРОДАЖА НА СИНЮЮ РЫБУ В 50%! <a href="/store">ЗАКУПИТЬСЯ</a>
+            </p>
+        </div>
+    </div>
+    <div class="header-row">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="header-mobile">
+                    <i class="bi bi-list" id="btn-menu"></i>
+                </div>
+                <div class="header-left">
+                    <a href="/" class="logo">Wobble</a>
+                </div>
+                <div class="header-center" id="sidebar">
+                    <nav class="navigation">
+                        <ul class="menu-list">
+                            <li class="menu-list-item megamenu-wrapper">
+                                <a href="/store" class="menu-link">Магазин
+                                    <i class="bi bi-chevron-down"></i>
+                                </a>
+                                <div class="menu-dropdown-wrapper">
+                                    <div class="menu-dropdown-megamenu">
+                                        <div class="megamenu-links">
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Свежая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">
+                                                    Копченая рыба
+                                                </h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="megamenu-products">
+                                                <h3 class="megamenu-product-title">Филе рыбы</h3>
+                                                <ul class="megamenu-menu-list">
+                                                    <li><a href="#">Красная</a></li>
+                                                    <li><a href="#">Синяя</a></li>
+                                                    <li><a href="#">Желтая</a></li>
+                                                    <li><a href="#">Серебристая</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="megamenu-single">
+                                            <a href="#">
+                                                <img src="/img/wobble-sign.png" alt="" />
+                                            </a>
+                                            <h3 class="megamenu-single-title">
+                                                Успевайте купить рыбку по классной цене!
+                                            </h3>
+                                            <h4 class="megamenu-single-subtitle">
+                                                Всегда свежие продукты
+                                            </h4>
+                                            <a href="#" class="megamenu-single-button btn btn-sm">Купить</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="/blog" class="menu-link">О нас</a>
+                            </li>
+                            <li class="menu-list-item">
+                                <a href="/contact" class="menu-link">Поддержка</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <i class="bi-x-circle" id="close-sidebar"></i>
+                </div>
+                <div class="header-right">
+                    <div class="header-right-links">
+                        <a href="/account" id="accountLink">
+                            <i class="bi bi-person"></i>
+                        </a>
+                    </div>
+                    <div class="cart-container">
+                        <button id="cart-button">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count">0</span>
+                        </button>
+                        <div class="cart-dropdown" id="cart-dropdown">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Товары будут добавляться сюда -->
+                            </div>
+                            <div class="cart-total">
+                                Итого: <span id="cart-total">0</span> ₽
+                            </div>
+                            <button class="checkout-btn">Оформить заказ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 <div class="auth-container">
     <div class="auth-form">
         <h2>Вход в аккаунт</h2>
@@ -26,6 +141,7 @@
         </div>
     </div>
 </div>
+<script src="/js/cart/cart.js" type="module"></script>
 <script src="/js/auth/auth.js"></script>
 </body>
 </html>

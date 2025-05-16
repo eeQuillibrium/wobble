@@ -1,7 +1,9 @@
 package dto
 
 type Order struct {
-	Items []OrderedProduct `json:"items"`
+	Items           []OrderedProduct `json:"items"`
+	TotalAmount     uint64           `json:"totalAmount"`
+	DeliveryAddress string           `json:"deliveryAddress"`
 }
 
 type OrderedProduct struct {

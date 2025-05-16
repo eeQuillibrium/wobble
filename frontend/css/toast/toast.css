@@ -1,0 +1,99 @@
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    padding: 1rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateX(calc(100% + 20px));
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    z-index: 9999;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border-left: 4px solid #4caf50;
+}
+
+.toast.active {
+    transform: translateX(0);
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+}
+
+.toast-icon {
+    font-size: 20px;
+    color: #4caf50;
+    margin-right: 10px;
+}
+
+.toast-message {
+    color: #333;
+    font-size: 16px;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: #e0e0e0;
+}
+
+.toast-progress:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background: #4caf50;
+    animation: progress 3s linear forwards;
+}
+
+@keyframes progress {
+    100% {
+        right: 100%;
+    }
+}
+
+/* Добавьте эти стили к существующим */
+.toast.success {
+    border-left-color: #4caf50;
+}
+
+.toast.error {
+    border-left-color: #f44336;
+}
+
+.toast.warning {
+    border-left-color: #ff9800;
+}
+
+.toast.success .toast-icon {
+    color: #4caf50;
+}
+
+.toast.error .toast-icon {
+    color: #f44336;
+}
+
+.toast.warning .toast-icon {
+    color: #ff9800;
+}
+
+.toast.success .toast-progress:before {
+    background: #4caf50;
+}
+
+.toast.error .toast-progress:before {
+    background: #f44336;
+}
+
+.toast.warning .toast-progress:before {
+    background: #ff9800;
+}

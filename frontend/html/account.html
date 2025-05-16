@@ -6,6 +6,7 @@
     <title>Мой аккаунт - Wobble</title>
     <link rel="stylesheet" href="/css/account/account.css">
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/toast/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Базовые стили для работы до загрузки основного CSS */
@@ -150,10 +151,10 @@
                                 </div>
                             </li>
                             <li class="menu-list-item">
-                                <a href="html/blog" class="menu-link">О нас</a>
+                                <a href="/blog" class="menu-link">О нас</a>
                             </li>
                             <li class="menu-list-item">
-                                <a href="html/contact" class="menu-link">Поддержка</a>
+                                <a href="/contact" class="menu-link">Поддержка</a>
                             </li>
                         </ul>
                     </nav>
@@ -218,10 +219,13 @@
         </div>
     </div>
 </div>
-
+<div id="toast" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <span class="toast-message"></span>
+    </div>
+    <div class="toast-progress"></div>
+</div>
 <script src="/js/account/account.js"></script>
-<script>
-
-</script>
 </body>
 </html>

@@ -11,7 +11,7 @@ func (a *Account) CreateOrder(ctx context.Context, userID uint64, order dto.Orde
 	var orderID uint64
 
 	err := a.WrapWithTransaction(ctx, func(tx pgx.Tx) error {
-		err := tx.QueryRow(ctx, queryCreateOrder, userID, a.getTotal(order.Items)).Scan(&orderID)
+		err := tx.QueryRow(ctx, queryCreateOrder, userID, order.TotalAmount, order.DeliveryAddress).Scan(&orderID)
 		if err != nil {
 			return fmt.Errorf("error with create order: %w", err)
 		}
@@ -31,16 +31,6 @@ func (a *Account) CreateOrder(ctx context.Context, userID uint64, order dto.Orde
 	}
 
 	return nil
-}
-
-func (a *Account) getTotal(items []dto.OrderedProduct) uint64 {
-	var result uint64 = 0
-
-	for _, item := range items {
-		result += item.Price * item.Quantity
-	}
-
-	return result
 }
 
 func (a *Account) buildInsertOrderProduct(orderID uint64, items []dto.OrderedProduct) (string, []interface{}, error) {

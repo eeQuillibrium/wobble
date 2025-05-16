@@ -3,11 +3,12 @@ package models
 import "time"
 
 type Order struct {
-	ID          uint64           `db:"id"`
-	CreatedAt   time.Time        `db:"created_at"`
-	Status      string           `db:"status"`
-	Items       []OrderedProduct `db:"items"`
-	TotalAmount uint64           `db:"total_amount"`
+	ID              uint64           `db:"id"`
+	CreatedAt       time.Time        `db:"created_at"`
+	Status          string           `db:"status"`
+	Items           []OrderedProduct `db:"items"`
+	TotalAmount     uint64           `db:"total_amount"`
+	DeliveryAddress *string          `db:"delivery_address"`
 }
 
 type OrderedProduct struct {

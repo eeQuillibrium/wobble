@@ -14,7 +14,7 @@ insert into users.orders(
     status,
     total
 ) VALUES
-    (1, current_timestamp, 'Активный', 1200);
+    (1, current_timestamp, 'Активный', 1200, 'г Москва');
 -- +goose StatementEnd
 
 -- +goose Down

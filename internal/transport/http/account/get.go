@@ -37,11 +37,12 @@ func (a *API) GetOrders(c fiber.Ctx) error {
 	var response []fiber.Map
 	for _, order := range orders {
 		response = append(response, fiber.Map{
-			"id":          order.ID,
-			"orderDate":   order.CreatedAt.Format(time.RFC3339),
-			"status":      order.Status,
-			"totalAmount": order.TotalAmount,
-			"items":       order.Items,
+			"id":              order.ID,
+			"orderDate":       order.CreatedAt.Format(time.RFC3339),
+			"status":          order.Status,
+			"totalAmount":     order.TotalAmount,
+			"items":           order.Items,
+			"deliveryAddress": order.DeliveryAddress,
 		})
 	}
 

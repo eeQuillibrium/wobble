@@ -22,6 +22,7 @@ SELECT
     o.created_at,
     o.status,
     o.total AS total_amount,
+    o.delivery_address as delivery_address,
     jsonb_agg(
             jsonb_build_object(
                     'id', p.id,
@@ -47,12 +48,7 @@ ORDER BY
     o.created_at DESC;`
 
 const queryCreateOrder = `
-INSERT INTO users.orders(user_id, status, total) 
-VALUES ($1, 'Активный', $2)
+INSERT INTO users.orders(user_id, status, total, delivery_address) 
+VALUES ($1, 'Активный', $2, $3)
 RETURNING id
-`
-
-const queryCreateOrderProduct = `
-INSERT INTO users.orders_products(order_id, product_id, quantity)
-VALUES ($1, $2, $3)
 `

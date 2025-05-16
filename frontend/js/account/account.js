@@ -1,119 +1,213 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Проверка наличия необходимых DOM элементов
-    const requiredElements = [
-        'user-name', 'user-email', 'user-login',
-        'orders-list', 'account-cart-items', 'account-cart-total',
-        'logout-btn'
-    ];
+    // Конфигурация
+    const config = {
+        dadataToken: "", // Замените на реальный ключ
+        endpoints: {
+            createOrder: '/account/CreateOrder',
+            getUser: '/account/GetUser',
+            getOrders: '/account/GetOrders',
+            logout: '/account/logout'
+        }
+    };
 
-    const missingElements = requiredElements.filter(id => !document.getElementById(id));
-    if (missingElements.length > 0) {
-        console.error('Missing required elements:', missingElements);
-        showError('Ошибка загрузки страницы. Пожалуйста, обновите страницу.');
-        return;
+    // Состояние приложения
+    const state = {
+        cart: JSON.parse(localStorage.getItem('cart')) || [],
+        selectedAddress: '',
+        modal: null
+    };
+
+    // Инициализация
+    function init() {
+        checkRequiredElements();
+        loadAccountData();
+        setupEventListeners();
+        setupCartControls();
+        addModalStyles();
     }
 
-    // Инициализация корзины
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    // Проверка обязательных элементов DOM
+    function checkRequiredElements() {
+        const requiredIds = [
+            'user-name', 'user-email', 'user-login',
+            'orders-list', 'account-cart-items', 'account-cart-total',
+            'logout-btn'
+        ];
 
-    // Добавляем в начало файла (после объявления cart)
-    let modal = null;
-    let selectedAddress = '';
+        const missing = requiredIds.filter(id => !document.getElementById(id));
+        if (missing.length > 0) {
+            console.error('Missing elements:', missing);
+            showError('Ошибка загрузки страницы. Обновите страницу.');
+            return false;
+        }
+        return true;
+    }
 
-    // Функция создания модального окна
-    function createOrderModal() {
-        const modalHTML = `
-    <div class="modal-overlay" id="order-modal">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <h2>Оформление заказа</h2>
-            <div class="form-group">
-                <label for="address-input">Адрес доставки</label>
-                <input type="text" id="address-input" placeholder="Введите ваш адрес...">
-                <div id="address-suggestions" class="suggestions-container"></div>
-            </div>
-            <button id="confirm-order" class="btn-primary">Подтвердить заказ</button>
-        </div>
-    </div>
-    `;
+    // Настройка обработчиков событий
+    function setupEventListeners() {
+        // Переключение вкладок
+        document.querySelectorAll('[data-tab]').forEach(tab => {
+            tab.addEventListener('click', handleTabSwitch);
+        });
 
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        modal = document.getElementById('order-modal');
+        // Кнопка оформления заказа
+        document.querySelector('.checkout-btn')?.addEventListener('click', openOrderModal);
 
-        // Инициализация поиска адреса (аналогично предыдущему примеру)
-        initAddressAutocomplete();
+        // Выход из аккаунта
+        document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+    }
 
-        // Закрытие модального окна
-        modal.querySelector('.close-modal').addEventListener('click', closeModal);
-        modal.querySelector('#confirm-order').addEventListener('click', submitOrder);
+    // Управление корзиной
+    function setupCartControls() {
+        document.addEventListener('click', function(e) {
+            const target = e.target;
 
-        // Закрытие при клике вне окна
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
+            // Увеличение количества
+            if (target.classList.contains('quantity-btn') && target.dataset.action === 'increase') {
+                adjustQuantity(target.dataset.id, 1);
+            }
+
+            // Уменьшение количества
+            if (target.classList.contains('quantity-btn') && target.dataset.action === 'decrease') {
+                adjustQuantity(target.dataset.id, -1);
+            }
+
+            // Удаление товара
+            if (target.classList.contains('remove-btn')) {
+                removeFromCart(target.dataset.id);
+            }
         });
     }
 
-    function initAddressAutocomplete() {
-        const addressInput = document.getElementById('address-input');
-        const suggestionsContainer = document.getElementById('address-suggestions');
+    // Загрузка данных аккаунта
+    async function loadAccountData() {
+        try {
+            showLoading();
 
-        addressInput.addEventListener('input', async function() {
-            const query = this.value.trim();
+            // Загрузка данных пользователя
+            const userData = await fetchData(config.endpoints.getUser);
+            updateUserInfo(userData);
+
+            // Загрузка истории заказов
+            const ordersData = await fetchData(config.endpoints.getOrders);
+            renderOrders(ordersData);
+
+            // Обновление корзины
+            updateAccountCart();
+
+        } catch (error) {
+            console.error('Error loading account data:', error);
+            showError(error.message || 'Ошибка загрузки данных');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Модальное окно оформления заказа
+    function openOrderModal() {
+        if (state.cart.length === 0) {
+            showError('Корзина пуста. Добавьте товары перед оформлением.');
+            return;
+        }
+
+        if (!state.modal) createOrderModal();
+        state.modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function createOrderModal() {
+        const modalHTML = `
+        <div class="modal-overlay" id="order-modal">
+            <div class="modal-content">
+                <button class="close-modal">&times;</button>
+                <h2>Оформление заказа</h2>
+                <div class="form-group">
+                    <label for="address-input">Адрес доставки</label>
+                    <input type="text" id="address-input" placeholder="Введите ваш адрес...">
+                    <div id="address-suggestions" class="suggestions-container"></div>
+                </div>
+                <button id="confirm-order" class="btn-primary">Подтвердить заказ</button>
+            </div>
+        </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        state.modal = document.getElementById('order-modal');
+
+        initAddressAutocomplete();
+        setupModalEvents();
+    }
+
+    function initAddressAutocomplete() {
+        const input = document.getElementById('address-input');
+        const container = document.getElementById('address-suggestions');
+
+        input.addEventListener('input', debounce(async () => {
+            const query = input.value.trim();
 
             if (query.length < 3) {
-                suggestionsContainer.innerHTML = '';
+                container.innerHTML = '';
                 return;
             }
 
             try {
-                // Используем API DaData (замените YOUR_TOKEN)
-                const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Token YOUR_DADATA_API_KEY'
-                    },
-                    body: JSON.stringify({
-                        query: query,
-                        count: 5,
-                        locations: [{ country: 'Россия' }]
-                    })
-                });
-
-                const data = await response.json();
-                suggestionsContainer.innerHTML = '';
-
-                data.suggestions.forEach(suggestion => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.textContent = suggestion.value;
-                    div.addEventListener('click', () => {
-                        addressInput.value = suggestion.value;
-                        selectedAddress = suggestion.value;
-                        suggestionsContainer.innerHTML = '';
-                    });
-                    suggestionsContainer.appendChild(div);
-                });
+                const suggestions = await searchAddress(query);
+                renderSuggestions(suggestions, container, input);
             } catch (error) {
                 console.error('Address search error:', error);
+                container.innerHTML = '<div class="error">Ошибка поиска адреса</div>';
             }
+        }, 300));
+    }
+
+    async function searchAddress(query) {
+        const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Token ' + config.dadataToken
+            },
+            body: JSON.stringify({
+                query: query,
+                count: 5,
+                locations: [{ country: 'Россия' }]
+            })
+        });
+
+        if (!response.ok) throw new Error('Ошибка сервиса поиска адресов');
+        return (await response.json()).suggestions;
+    }
+
+    function renderSuggestions(suggestions, container, input) {
+        container.innerHTML = '';
+
+        suggestions.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.textContent = item.value;
+            div.addEventListener('click', () => {
+                input.value = item.value;
+                state.selectedAddress = item.value;
+                container.innerHTML = '';
+            });
+            container.appendChild(div);
         });
     }
 
-    function openModal() {
-        if (!modal) createOrderModal();
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+    function setupModalEvents() {
+        state.modal.querySelector('.close-modal').addEventListener('click', closeOrderModal);
+        state.modal.querySelector('#confirm-order').addEventListener('click', submitOrder);
+        state.modal.addEventListener('click', (e) => e.target === state.modal && closeOrderModal());
     }
 
-    function closeModal() {
-        modal.style.display = 'none';
+    function closeOrderModal() {
+        state.modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
     async function submitOrder() {
-        if (!selectedAddress) {
+        if (!state.selectedAddress) {
             showError('Пожалуйста, укажите адрес доставки');
             return;
         }
@@ -121,45 +215,36 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoading();
 
-            const orderItems = cart.map(item => ({
-                id: parseInt(item.id),
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                imageUrl: item.image
-            }));
+            const orderData = {
+                items: state.cart.map(item => ({
+                    id: parseInt(item.id),
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    imageUrl: item.image
+                })),
+                totalAmount: calculateTotal(),
+                deliveryAddress: state.selectedAddress
+            };
 
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-            const response = await fetch('/CreateOrder', {
+            const result = await fetchData(config.endpoints.createOrder, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    items: orderItems,
-                    totalAmount: totalAmount,
-                    deliveryAddress: selectedAddress
-                })
+                body: orderData
             });
 
-            if (!response.ok) throw new Error('Ошибка при оформлении заказа');
-
-            const result = await response.json();
             if (!result.success) throw new Error(result.message || 'Ошибка сервера');
 
-            // Очищаем корзину после успешного заказа
-            cart = [];
+            // Очистка после успешного заказа
+            state.cart = [];
             localStorage.removeItem('cart');
             updateAccountCart();
-            closeModal();
+            closeOrderModal();
 
-            // Показываем уведомление об успехе
-            alert('Заказ успешно оформлен!');
-
-            // Переключаем на вкладку заказов
+            // Обновление интерфейса
             document.querySelector('[data-tab="orders"]').click();
             await loadAccountData();
+
+            showSuccess('Заказ успешно оформлен!');
 
         } catch (error) {
             showError(error.message || 'Ошибка при оформлении заказа');
@@ -168,356 +253,313 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
-    // Загрузка данных пользователя и заказов
-    loadAccountData();
-
-    // Переключение вкладок
-    document.querySelectorAll('[data-tab]').forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            const tabId = this.getAttribute('data-tab');
-
-            // Скрыть все вкладки
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            // Показать выбранную вкладку
-            const activeTab = document.getElementById(tabId);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-
-            // Обновить активный пункт меню
-            document.querySelectorAll('.account-menu li').forEach(item => {
-                item.classList.remove('active');
-            });
-            this.parentElement.classList.add('active');
-
-            // При переключении на корзину обновить её содержимое
-            if (tabId === 'cart') {
-                updateAccountCart();
-            }
-        });
-    });
-
-    // Обработка выхода
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            logout();
-        });
+    // Вспомогательные функции
+    function debounce(func, delay) {
+        let timeout;
+        return function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, arguments), delay);
+        };
     }
 
-    // Функция загрузки данных аккаунта
-    async function loadAccountData() {
-        try {
-            showLoading();
+    async function fetchData(endpoint, options = {}) {
+        const defaultOptions = {
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        };
 
-            // Загружаем данные пользователя
-            const userResponse = await fetch('/account/GetUser', {
-                credentials: 'include'
-            });
+        const response = await fetch(endpoint, {
+            ...defaultOptions,
+            ...options,
+            body: options.body ? JSON.stringify(options.body) : undefined
+        });
 
-            if (!userResponse.ok) {
-                throw new Error('Ошибка загрузки данных пользователя');
-            }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-            const userData = await userResponse.json();
-            console.log('User data received:', userData);
+        return await response.json();
+    }
 
-            // Заполняем данные пользователя
-            safeSetContent('user-name', userData.name);
-            safeSetContent('user-email', userData.email);
-            safeSetContent('user-login', userData.login);
+    function calculateTotal() {
+        return state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
 
-            // Загружаем историю заказов
-            const ordersResponse = await fetch('/account/GetOrders', {
-                credentials: 'include'
-            });
-
-            if (!ordersResponse.ok) {
-                throw new Error('Ошибка загрузки истории заказов');
-            }
-
-            const ordersData = await ordersResponse.json();
-            console.log('Orders data received:', ordersData);
-
-            // Заполняем историю заказов
-            renderOrders(ordersData);
-
-            // Обновляем корзину
+    function adjustQuantity(itemId, delta) {
+        const item = state.cart.find(i => i.id === itemId);
+        if (item) {
+            item.quantity = Math.max(1, item.quantity + delta);
+            saveCart();
             updateAccountCart();
-
-        } catch (error) {
-            console.error('Error loading account data:', error);
-            showError(error.message || 'Произошла ошибка при загрузке данных');
-        } finally {
-            hideLoading();
         }
     }
 
-    // Функция безопасного установки содержимого элемента
-    function safeSetContent(elementId, value, defaultValue = 'Не указано') {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.textContent = value || defaultValue;
-        } else {
-            console.warn(`Element with id ${elementId} not found`);
-        }
+    function removeFromCart(itemId) {
+        state.cart = state.cart.filter(i => i.id !== itemId);
+        saveCart();
+        updateAccountCart();
     }
 
-    // Функция отображения заказов
-    function renderOrders(orders) {
-        const ordersList = document.getElementById('orders-list');
-        if (!ordersList) return;
-
-        if (!orders || !Array.isArray(orders) || orders.length === 0) {
-            ordersList.innerHTML = '<p class="empty-message">У вас пока нет заказов</p>';
-            return;
-        }
-
-
-        ordersList.innerHTML = orders.map(order => {
-            // Проверяем наличие items и что это массив
-            const items = Array.isArray(order.items) ? order.items : [];
-
-            return `
-                <div class="order-item">
-                    <div class="order-header">
-                        <span>Заказ #${order.id || 'N/A'}</span>
-                        <span>${formatDate(order.orderDate)}</span>
-                        <span>${order.totalAmount ? order.totalAmount.toFixed(2) : '0.00'} ₽</span>
-                        <span class="status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
-                    </div>
-                    ${items.length > 0 ? `
-                    <div class="order-products">
-                        ${items.map(item => `
-                            <div class="order-product">
-                                <img src="${item.imageUrl || '/img/no-image.png'}" alt="${item.name || 'Товар'}" width="50">
-                                <div class="order-product-info">
-                                    <span class="product-name">${item.name || 'Неизвестный товар'}</span>
-                                    <span class="product-quantity">${item.quantity || 1} × ${item.price ? item.price.toFixed(2) : '0.00'} ₽</span>
-                                    <span class="product-total">${(item.quantity * item.price).toFixed(2)} ₽</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    ` : '<p>Нет информации о товарах</p>'}
-                </div>
-            `;
-        }).join('');
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(state.cart));
     }
 
-    // Функция обновления корзины в аккаунте
+    function updateUserInfo(userData) {
+        safeSetContent('user-name', userData.name);
+        safeSetContent('user-email', userData.email);
+        safeSetContent('user-login', userData.login);
+    }
+
     function updateAccountCart() {
-        const cartItems = document.getElementById('account-cart-items');
-        const cartTotal = document.getElementById('account-cart-total');
+        const itemsContainer = document.getElementById('account-cart-items');
+        const totalElement = document.getElementById('account-cart-total');
 
-        if (!cartItems || !cartTotal) return;
+        if (!itemsContainer || !totalElement) return;
 
-        let total = 0;
+        itemsContainer.innerHTML = state.cart.length > 0
+            ? state.cart.map(renderCartItem).join('')
+            : '<p class="empty-message">Ваша корзина пуста</p>';
 
-        cartItems.innerHTML = cart.length > 0 ? cart.map(item => {
-            const itemTotal = (item.price || 0) * (item.quantity || 1);
-            total += itemTotal;
+        totalElement.textContent = calculateTotal().toFixed(2);
+    }
 
-            return `
-                <div class="cart-item">
-                    <img src="${item.image || '/img/no-image.png'}" alt="${item.name || 'Товар'}">
-                    <div class="cart-item-info">
-                        <h4>${item.name || 'Неизвестный товар'}</h4>
-                        <p>${(item.price || 0).toFixed(2)} ₽ × ${item.quantity || 1}</p>
-                        <div class="cart-item-controls">
-                            <button class="quantity-btn" data-id="${item.id}" data-action="decrease">-</button>
-                            <span>${item.quantity || 1}</span>
-                            <button class="quantity-btn" data-id="${item.id}" data-action="increase">+</button>
-                            <button class="remove-btn" data-id="${item.id}">Удалить</button>
-                        </div>
-                    </div>
+    function renderCartItem(item) {
+        const total = (item.price * item.quantity).toFixed(2);
+        return `
+        <div class="cart-item">
+            <img src="${item.image || '/img/no-image.png'}" alt="${item.name}">
+            <div class="cart-item-info">
+                <h4>${item.name}</h4>
+                <p>${item.price.toFixed(2)} ₽ × ${item.quantity}</p>
+                <div class="cart-item-controls">
+                    <button class="quantity-btn" data-id="${item.id}" data-action="decrease">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-btn" data-id="${item.id}" data-action="increase">+</button>
+                    <button class="remove-btn" data-id="${item.id}">Удалить</button>
                 </div>
-            `;
-        }).join('') : '<p class="empty-message">Ваша корзина пуста</p>';
-
-        cartTotal.textContent = total.toFixed(2);
-
-        addCartEventListeners();
+            </div>
+        </div>
+        `;
     }
 
+    function renderOrders(orders) {
+        const container = document.getElementById('orders-list');
+        if (!container) return;
 
-
-    // Функция добавления обработчиков для корзины
-    function addCartEventListeners() {
-        document.querySelectorAll('.quantity-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const action = this.getAttribute('data-action');
-                const item = cart.find(i => i.id === id);
-
-                if (item) {
-                    if (action === 'increase') {
-                        item.quantity = (item.quantity || 0) + 1;
-                    } else if (action === 'decrease') {
-                        item.quantity = Math.max(1, (item.quantity || 1) - 1);
-                    }
-
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateAccountCart();
-                }
-            });
-        });
-
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                cart = cart.filter(i => i.id !== id);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateAccountCart();
-            });
-        });
+        container.innerHTML = !orders || orders.length === 0
+            ? '<p class="empty-message">У вас пока нет заказов</p>'
+            : orders.map(renderOrder).join('');
     }
 
-    // Функция выхода
-    async function logout() {
+    function renderOrder(order) {
+        const items = Array.isArray(order.items) ? order.items : [];
+        return `
+        <div class="order-item">
+            <div class="order-header">
+                <span>Заказ #${order.id || 'N/A'}</span>
+                <span>${formatDate(order.orderDate)}</span>
+                <span>${order.totalAmount?.toFixed(2) || '0.00'} ₽</span>
+                <span class="status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+            </div>
+            ${items.length > 0 ? `
+            <div class="order-products">
+                ${items.map(renderOrderItem).join('')}
+            </div>` : '<p>Нет информации о товарах</p>'}
+            <div class="address">
+                ${order.deliveryAddress}
+            </div>
+        </div>
+        `;
+    }
+
+    function renderOrderItem(item) {
+        const total = (item.quantity * item.price).toFixed(2);
+        return `
+        <div class="order-product">
+            <img src="${item.imageUrl || '/img/no-image.png'}" alt="${item.name}" width="50">
+            <div class="order-product-info">
+                <span class="product-name">${item.name}</span>
+                <span class="product-quantity">${item.quantity} × ${item.price?.toFixed(2) || '0.00'} ₽</span>
+                <span class="product-total">${total} ₽</span>
+            </div>
+        </div>
+        `;
+    }
+
+    async function handleLogout(e) {
+        e.preventDefault();
         try {
-            localStorage.removeItem('cart');
-
-            const response = await fetch('/account/logout', {
+            await fetch(config.endpoints.logout, {
                 method: 'POST',
                 credentials: 'include'
             });
-
-            if (response.ok) {
-                window.location.href = '/';
-            } else {
-                showError('Не удалось выйти. Попробуйте снова.');
-            }
+            localStorage.removeItem('cart');
+            window.location.href = '/';
         } catch (error) {
-            console.error('Logout error:', error);
-            showError('Ошибка соединения. Попробуйте снова.');
+            showError('Ошибка при выходе из системы');
         }
     }
 
-    // Вспомогательные функции
+    function handleTabSwitch(e) {
+        e.preventDefault();
+        const tabId = this.getAttribute('data-tab');
+
+        // Переключение вкладок
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(tabId)?.classList.add('active');
+
+        // Обновление активного пункта меню
+        document.querySelectorAll('.account-menu li').forEach(item => {
+            item.classList.remove('active');
+        });
+        this.parentElement.classList.add('active');
+
+        // Обновление корзины при необходимости
+        if (tabId === 'cart') updateAccountCart();
+    }
+
+    function addModalStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .suggestions-container {
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+        .suggestion-item {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #f5f5f5;
+        }
+        .error {
+            color: #ff4d4f;
+            padding: 0.5rem;
+        }
+        #address-input {
+            width:70%;
+            height: 3.5rem;
+        }
+        #confirm-order {
+            padding: 0.5rem 0.5rem;
+        }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function safeSetContent(elementId, value, defaultValue = 'Не указано') {
+        const element = document.getElementById(elementId);
+        if (element) element.textContent = value || defaultValue;
+    }
+
     function formatDate(dateString) {
         try {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('ru-RU', options);
-        } catch (e) {
-            console.error('Error formatting date:', e);
+            return new Date(dateString).toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch {
             return dateString || 'Дата не указана';
         }
     }
 
     function getStatusClass(status) {
-        if (!status) return 'unknown';
-
-        const statusMap = {
+        const map = {
             'completed': 'delivered',
             'delivered': 'delivered',
             'processing': 'processing',
             'shipped': 'processing',
             'cancelled': 'cancelled'
         };
-        return statusMap[status.toLowerCase()] || 'unknown';
+        return map[status?.toLowerCase()] || 'unknown';
     }
 
     function getStatusText(status) {
-        if (!status) return 'Статус неизвестен';
-
-        const statusTextMap = {
+        const map = {
             'completed': 'Доставлен',
             'delivered': 'Доставлен',
             'processing': 'В обработке',
             'shipped': 'Отправлен',
             'cancelled': 'Отменен'
         };
-        return statusTextMap[status.toLowerCase()] || status;
+        return map[status?.toLowerCase()] || status || 'Статус неизвестен';
     }
 
     function showLoading() {
-        const overlay = document.getElementById('loading-overlay');
-        if (overlay) {
-            overlay.style.display = 'flex'; // или 'block', если без flex
-        }
+        document.getElementById('loading-overlay')?.style?.removeProperty('display');
     }
+
     function hideLoading() {
-        const overlay = document.getElementById('loading-overlay');
-        if (overlay) {
-            overlay.style.display = 'none';
-        }
+        const loader = document.getElementById('loading-overlay');
+        if (loader) loader.style.display = 'none';
     }
 
     function showError(message) {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message';
-        errorElement.textContent = message;
+        const error = document.createElement('div');
+        error.className = 'error-message';
+        error.textContent = message;
 
         document.querySelectorAll('.tab-content').forEach(el => {
-            if (el) {
-                el.appendChild(errorElement.cloneNode(true));
-            }
+            if (el) el.appendChild(error.cloneNode(true));
         });
     }
 
-    // ===== Обработка оформления заказа =====
-    const checkoutBtn = document.querySelector('.checkout-btn');
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', async function() {
-            if (cart.length === 0) {
-                showError('Корзина пуста. Добавьте товары перед оформлением заказа.');
-                return;
-            }
+    function showSuccess(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = toast.querySelector('.toast-message');
 
-            try {
-                showLoading();
+        // Устанавливаем сообщение
+        toastMessage.textContent = message;
 
-                const orderItems = cart.map(item => ({
-                    id: parseInt(item.id),       // Преобразуем string в int
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity
-                }));
+        // Показываем toast
+        toast.classList.add('active');
 
+        // Автоматическое скрытие через 3 секунды
+        setTimeout(() => {
+            toast.classList.remove('active');
 
-                const response = await fetch('/account/CreateOrder', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ items: orderItems })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Ошибка при оформлении заказа');
-                }
-
-                const result = await response.json();
-
-                if (result.success) {
-                    // Очищаем корзину после успешного оформления
-                    cart = [];
-                    localStorage.removeItem('cart');
-                    updateAccountCart();  // Обновляем отображение корзины
-
-                    // Переключаемся на вкладку "История заказов"
-                    document.querySelector('[data-tab="orders"]').click();
-
-                    // Обновляем список заказов
-                    await loadAccountData();
-                } else {
-                    throw new Error(result.message || 'Неизвестная ошибка при оформлении заказа');
-                }
-            } catch (error) {
-                console.error('Checkout error:', error);
-                showError(error.message || 'Произошла ошибка при оформлении заказа');
-            } finally {
-                hideLoading();
-            }
-        });
+            // Сброс анимации прогресса
+            setTimeout(() => {
+                toast.querySelector('.toast-progress').style.animation = 'none';
+                setTimeout(() => {
+                    toast.querySelector('.toast-progress').style.animation = '';
+                }, 10);
+            }, 300);
+        }, 3000);
     }
 
+    // Запуск приложения
+    init();
 });
