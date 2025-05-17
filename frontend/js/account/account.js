@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('price', document.getElementById('product-price').value);
             formData.append('category', document.getElementById('product-category').value);
             formData.append('description', document.getElementById('product-description').value);
+            formData.append('amount', document.getElementById('product-amount').value)
             formData.append('image', document.getElementById('product-image').files[0]);
 
             const response = await fetch(config.endpoints.addProduct, {

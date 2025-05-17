@@ -6,7 +6,7 @@ import (
 )
 
 func (a *API) AddProduct(c fiber.Ctx) error {
-	_, err := c.FormFile("image")
+	file, err := c.FormFile("image")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -22,6 +22,13 @@ func (a *API) AddProduct(c fiber.Ctx) error {
 		})
 	}
 
-	//err := a.ctrl.AddProduct(c.Context(), file,)
+	err = a.ctrl.AddProduct(c.Context(), product, file)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Не удалось добавить продукт",
+		})
+	}
+
 	return nil
 }

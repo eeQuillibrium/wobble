@@ -6,8 +6,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r Store) GetProducts(ctx context.Context) ([]models.Product, error) {
-	rows, err := r.db.Query(ctx, queryGet)
+func (s Store) GetProducts(ctx context.Context) ([]models.Product, error) {
+	rows, err := s.db.Query(ctx, queryGet)
 	if err != nil {
 		return nil, err
 	}
