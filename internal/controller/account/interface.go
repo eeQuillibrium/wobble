@@ -7,7 +7,7 @@ import (
 )
 
 type IAccountController interface {
-	Register(ctx context.Context, reg dto.Register) (uint64, error)
+	Register(ctx context.Context, reg dto.Register) (models.RegisteredUser, error)
 	Auth(ctx context.Context, log dto.Login) (string, uint64, error)
 	GetUserByID(ctx context.Context, userID uint64) (models.User, error)
 	GetOrdersByUserID(ctx context.Context, userID uint64) ([]models.Order, error)

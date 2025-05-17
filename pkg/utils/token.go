@@ -7,10 +7,11 @@ import (
 
 const Secret = "your-secret-key"
 
-func GenerateJWT(userID uint64) (string, error) {
+func GenerateJWT(userID uint64, role string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = userID
+	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	tokenString, err := token.SignedString([]byte(Secret))

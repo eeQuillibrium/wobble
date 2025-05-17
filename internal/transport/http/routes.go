@@ -37,9 +37,9 @@ func (s *Server) InitHttp() {
 	s.app.Get("/healthcheck", func(c fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
-
-	// Index
-	s.app.Get("/", s.api.index.Index)
+	s.app.Get("/", func(c fiber.Ctx) error {
+		return c.Render("index", fiber.Map{})
+	})
 
 	// Account
 	account := s.app.Group("/account")
@@ -67,19 +67,12 @@ func (s *Server) InitHttp() {
 	// Contact
 	contact := s.app.Group("/contact")
 
-	contact.Get("/", func(c fiber.Ctx) error {
-		return c.Render("contact", fiber.Map{})
-	})
-
+	contact.Get("/", s.api.contact.Index)
 	contact.Post("/CreateAppeal", s.api.contact.CreateAppeal)
-
-	// Cart
-	cart := s.app.Group("/cart")
-
-	cart.Get("healthcheck", s.api.cart.Healthcheck)
 
 	// Store
 	store := s.app.Group("/store")
-	store.Get("healthcheck", s.api.store.Healthcheck)
+
 	store.Get("/", s.api.store.Store)
+	store.Post("/AddProduct", s.api.store.AddProduct)
 }

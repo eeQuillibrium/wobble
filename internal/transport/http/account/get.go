@@ -7,8 +7,9 @@ import (
 
 func (a *API) GetUser(c fiber.Ctx) error {
 	userID := c.Locals("userID").(uint64)
+	role := c.Locals("role").(string)
 
-	user, err := a.ctrl.GetUserByID(c.Context(), uint64(userID))
+	user, err := a.ctrl.GetUserByID(c.Context(), userID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Не удалось загрузить данные пользователя",
@@ -20,6 +21,7 @@ func (a *API) GetUser(c fiber.Ctx) error {
 		"name":  user.Name,
 		"email": user.Email,
 		"login": user.Login,
+		"role":  role,
 	})
 }
 

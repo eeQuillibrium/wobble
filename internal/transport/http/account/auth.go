@@ -16,7 +16,7 @@ func (a *API) Register(c fiber.Ctx) error {
 		})
 	}
 
-	id, err := a.ctrl.Register(c.Context(), reg)
+	user, err := a.ctrl.Register(c.Context(), reg)
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -27,7 +27,7 @@ func (a *API) Register(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"success": true,
 		"message": "Пользователь успешно зарегистрирован",
-		"user_id": id,
+		"user_id": user.ID,
 	})
 }
 
@@ -66,5 +66,4 @@ func (a *API) Logout(c fiber.Ctx) error {
 	utils.ClearCookies(c, "jwt")
 
 	return c.Redirect().To("/")
-
 }

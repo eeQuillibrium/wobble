@@ -7,3 +7,9 @@ type User struct {
 	Login    string `db:"login"`
 	Password string `db:"password"`
 }
+
+type RegisteredUser struct {
+	ID       uint64 `db:"id"`
+	Password []byte `db:"password"`
+	Role     string `db:"role"`
+}

@@ -49,7 +49,15 @@ func JWTAuthMiddleware() fiber.Handler {
 			})
 		}
 
+		role, ok := claims["role"].(string)
+		if !ok {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Role not found in token",
+			})
+		}
+
 		c.Locals("userID", uint64(userID))
+		c.Locals("role", role)
 
 		return c.Next()
 	}

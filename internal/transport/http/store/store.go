@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func (a API) Store(c fiber.Ctx) error {
+func (a *API) Store(c fiber.Ctx) error {
 	products, err := a.ctrl.GetProducts(c.Context())
 	if err != nil {
 		logger.Ctx(c.Context()).Warn("error w/ products getting")

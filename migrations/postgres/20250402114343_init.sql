@@ -12,7 +12,7 @@ create table users.list(
     id serial primary key,
     name varchar not null,
     email varchar,
-    login varchar not null,
+    login varchar not null unique,
     password varchar not null,
     role reference.user_role default 'user' not null
 );

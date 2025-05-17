@@ -4,10 +4,10 @@ const queryCreate = `
 	INSERT INTO 
 		users.list(name, email, login, password) 
 	VALUES($1, $2, $3, $4)
-	RETURNING id`
+	RETURNING id, role`
 
 const queryGetUser = `
-	SELECT id, password FROM users.list
+	SELECT id, password, role FROM users.list
     WHERE login = $1
 `
 

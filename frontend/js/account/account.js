@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
             createOrder: '/account/CreateOrder',
             getUser: '/account/GetUser',
             getOrders: '/account/GetOrders',
-            logout: '/account/logout'
+            logout: '/account/logout',
+            addProduct: '/store/AddProduct'
         }
     };
 
@@ -14,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const state = {
         cart: JSON.parse(localStorage.getItem('cart')) || [],
         selectedAddress: '',
-        modal: null
+        modal: null,
+        isAdmin: false
     };
 
     // Инициализация
@@ -24,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupEventListeners();
         setupCartControls();
         addModalStyles();
+        setupAdminPanel();
     }
 
     // Проверка обязательных элементов DOM
@@ -62,21 +65,89 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(e) {
             const target = e.target;
 
-            // Увеличение количества
             if (target.classList.contains('quantity-btn') && target.dataset.action === 'increase') {
                 adjustQuantity(target.dataset.id, 1);
             }
 
-            // Уменьшение количества
             if (target.classList.contains('quantity-btn') && target.dataset.action === 'decrease') {
                 adjustQuantity(target.dataset.id, -1);
             }
 
-            // Удаление товара
             if (target.classList.contains('remove-btn')) {
                 removeFromCart(target.dataset.id);
             }
         });
+    }
+
+    // Инициализация админ-панели
+    function setupAdminPanel() {
+        const adminTab = document.querySelector('[data-tab="admin-panel"]');
+        if (adminTab) {
+            adminTab.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('admin-panel');
+            });
+        }
+
+        const addProductForm = document.getElementById('add-product-form');
+        if (addProductForm) {
+            addProductForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await handleAddProduct();
+            });
+
+            // Превью изображения
+            document.getElementById('product-image').addEventListener('change', function() {
+                const preview = document.getElementById('image-preview');
+                preview.innerHTML = '';
+
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '200px';
+                        img.style.maxHeight = '200px';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    }
+
+    // Обработка добавления товара
+    async function handleAddProduct() {
+        const submitBtn = document.querySelector('#add-product-form button[type="submit"]');
+        submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData();
+            formData.append('name', document.getElementById('product-name').value);
+            formData.append('price', document.getElementById('product-price').value);
+            formData.append('category', document.getElementById('product-category').value);
+            formData.append('description', document.getElementById('product-description').value);
+            formData.append('image', document.getElementById('product-image').files[0]);
+
+            const response = await fetch(config.endpoints.addProduct, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Ошибка добавления товара');
+
+            const result = await response.json();
+            if (!result.success) throw new Error(result.message || 'Неизвестная ошибка');
+
+            showSuccess('Товар успешно добавлен!');
+            document.getElementById('add-product-form').reset();
+            document.getElementById('image-preview').innerHTML = '';
+        } catch (error) {
+            showError(error.message || 'Ошибка при добавлении товара');
+        } finally {
+            submitBtn.disabled = false;
+        }
     }
 
     // Загрузка данных аккаунта
@@ -87,6 +158,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Загрузка данных пользователя
             const userData = await fetchData(config.endpoints.getUser);
             updateUserInfo(userData);
+
+            // Проверка роли администратора
+            if (userData.role === 'admin') {
+                state.isAdmin = true;
+                document.getElementById('admin-menu-item').style.display = 'block';
+            }
 
             // Загрузка истории заказов
             const ordersData = await fetchData(config.endpoints.getOrders);
@@ -241,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeOrderModal();
 
             // Обновление интерфейса
-            document.querySelector('[data-tab="orders"]').click();
+            switchTab('orders');
             await loadAccountData();
 
             showSuccess('Заказ успешно оформлен!');
@@ -265,13 +342,13 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchData(endpoint, options = {}) {
         const defaultOptions = {
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' }
+            headers: options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }
         };
 
         const response = await fetch(endpoint, {
             ...defaultOptions,
             ...options,
-            body: options.body ? JSON.stringify(options.body) : undefined
+            body: options.body instanceof FormData ? options.body : JSON.stringify(options.body)
         });
 
         if (!response.ok) {
@@ -403,7 +480,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleTabSwitch(e) {
         e.preventDefault();
         const tabId = this.getAttribute('data-tab');
+        switchTab(tabId);
+    }
 
+    function switchTab(tabId) {
         // Переключение вкладок
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById(tabId)?.classList.add('active');
@@ -412,7 +492,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.account-menu li').forEach(item => {
             item.classList.remove('active');
         });
-        this.parentElement.classList.add('active');
+
+        const activeItem = document.querySelector(`.account-menu li a[data-tab="${tabId}"]`);
+        if (activeItem) {
+            activeItem.parentElement.classList.add('active');
+        }
 
         // Обновление корзины при необходимости
         if (tabId === 'cart') updateAccountCart();
@@ -474,6 +558,71 @@ document.addEventListener('DOMContentLoaded', function() {
         #confirm-order {
             padding: 0.5rem 0.5rem;
         }
+        /* Стили для админ-панели */
+        #admin-panel {
+            padding: 20px;
+        }
+        .admin-panel-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #add-product-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        #add-product-form .form-group {
+            margin-bottom: 1rem;
+        }
+        #add-product-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        #add-product-form input,
+        #add-product-form select,
+        #add-product-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        #add-product-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        #image-preview {
+            margin-top: 1rem;
+        }
+        #image-preview img {
+            border-radius: 4px;
+            border: 1px solid #eee;
+            max-width: 200px;
+            max-height: 200px;
+        }
+        .error-message {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ff4d4f;
+            padding: 0.5rem;
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            transition: opacity 0.3s ease;
+        }
+        .close-error {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: inherit;
+            padding: 0 0 0 1rem;
+        }
+        .fade-out {
+            opacity: 0;
+        }
         `;
         document.head.appendChild(style);
     }
@@ -529,28 +678,51 @@ document.addEventListener('DOMContentLoaded', function() {
     function showError(message) {
         const error = document.createElement('div');
         error.className = 'error-message';
-        error.textContent = message;
+        error.innerHTML = `
+        <span>${message}</span>
+        <button class="close-error">&times;</button>
+    `;
 
         document.querySelectorAll('.tab-content').forEach(el => {
-            if (el) el.appendChild(error.cloneNode(true));
+            if (el) {
+                const errorClone = error.cloneNode(true);
+                el.appendChild(errorClone);
+
+                // Закрытие по кнопке
+                errorClone.querySelector('.close-error').addEventListener('click', () => {
+                    errorClone.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (errorClone.parentNode) {
+                            errorClone.parentNode.removeChild(errorClone);
+                        }
+                    }, 300);
+                });
+
+                // Автоматическое закрытие
+                setTimeout(() => {
+                    if (errorClone.parentNode) { // Проверяем, не удалено ли уже сообщение
+                        errorClone.classList.add('fade-out');
+                        setTimeout(() => {
+                            if (errorClone.parentNode) {
+                                errorClone.parentNode.removeChild(errorClone);
+                            }
+                        }, 300);
+                    }
+                }, 1000);
+            }
         });
     }
 
     function showSuccess(message) {
         const toast = document.getElementById('toast');
+        if (!toast) return;
+
         const toastMessage = toast.querySelector('.toast-message');
-
-        // Устанавливаем сообщение
         toastMessage.textContent = message;
-
-        // Показываем toast
         toast.classList.add('active');
 
-        // Автоматическое скрытие через 3 секунды
         setTimeout(() => {
             toast.classList.remove('active');
-
-            // Сброс анимации прогресса
             setTimeout(() => {
                 toast.querySelector('.toast-progress').style.animation = 'none';
                 setTimeout(() => {
