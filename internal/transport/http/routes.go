@@ -75,4 +75,5 @@ func (s *Server) InitHttp() {
 
 	store.Get("/", s.api.store.Store)
 	store.Post("/AddProduct", s.api.store.AddProduct)
+	store.Get("/:id", s.api.store.GetProduct)
 }

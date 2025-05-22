@@ -11,3 +11,9 @@ func (c Controller) GetProducts(ctx context.Context) ([]models.Product, error) {
 
 	return c.r.GetProducts(ctx)
 }
+
+func (c Controller) GetProduct(ctx context.Context, id uint64) (models.Product, error) {
+	logger.Ctx(ctx).Info("GetProducts")
+
+	return c.r.GetProduct(ctx, id)
+}

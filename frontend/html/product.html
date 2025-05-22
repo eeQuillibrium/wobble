@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wobble</title>
-    <link rel="stylesheet" href="/css/store/styles.css">
+    <title>{{.Product.Name}} - Wobble</title>
     <link rel="stylesheet" href="/css/store/footer.css">
     <link rel="stylesheet" href="/css/cart/cart.css">
     <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/product/product.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<!-- Навигация и корзина -->
-
 <header>
     <div class="global-notification">
         <div class="container">
@@ -111,7 +109,6 @@
                         </button>
                         <div class="cart-dropdown" id="cart-dropdown">
                             <div class="cart-items" id="cart-items">
-                                <!-- Товары будут добавляться сюда -->
                             </div>
                             <div class="cart-total">
                                 Итого: <span id="cart-total">0</span> ₽
@@ -125,49 +122,48 @@
     </div>
 </header>
 
-
-<!-- Основной контент -->
-<main class="products-container">
-    <h1>Наши товары</h1>
-
-    <!-- Фильтры по категориям -->
-    <div class="filters">
-        <button class="filter-btn active" data-category="all">Все товары</button>
-        <button class="filter-btn" data-category="красная рыба">Красная рыба</button>
-        <button class="filter-btn" data-category="снеки">Снеки</button>
-        <button class="filter-btn" data-category="другое">Другое</button>
+<div class="product-page">
+    <div class="breadcrumbs">
+        <a href="/">Главная</a> &gt;
+        <a href="/store">Магазин</a> &gt;
+        <span>{{.Product.Name}}</span>
     </div>
-    <div class="products-grid">
-        {{range .Products}}
-        <div class="product-card" data-id="{{.ID}}" data-category="{{.Category}}">
-            <a href="/store/{{.ID}}" class="product-image-link">
-                <div class="product-image-container">
-                    <img src="{{.ImageURL}}" alt="{{.Name}}" class="product-image">
-                    <span class="product-category">{{.Category}}</span>
+
+    <div class="product-detail">
+        <div class="product-gallery">
+            <img src="/{{.Product.ImageURL}}" alt="{{.Product.Name}}" class="main-image">
+        </div>
+
+        <div class="product-info">
+            <h1>{{.Product.Name}}</h1>
+            <div class="product-meta">
+                <span class="category">{{.Product.Category}}</span>
+                <span class="price">{{printf "%.2f" .Product.Price}} ₽</span>
+            </div>
+
+            <div class="product-description">
+                <h3>Описание</h3>
+                <p>{{.Product.Description}}</p>
+            </div>
+
+            <div class="product-actions">
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="quantity-btn increase">+</button>
                 </div>
-            </a>
-            <div class="product-info">
-                <a href="/store/{{.ID}}" class="product-name-link">
-                    <h3>{{.Name}}</h3>
-                </a>
-                <p class="product-description">{{.Description}}</p>
-                <div class="product-footer">
-                    <span class="product-price">{{.Price}} ₽</span>
-                    <button class="add-to-cart"
-                            data-id="{{.ID}}"
-                            data-name="{{.Name}}"
-                            data-price="{{.Price}}"
-                            data-image="{{.ImageURL}}">
-                        В корзину
-                    </button>
-                </div>
+                <button class="add-to-cart"
+                        data-id="{{.Product.ID}}"
+                        data-name="{{.Product.Name}}"
+                        data-price="{{.Product.Price}}"
+                        data-image="{{.Product.ImageURL}}">
+                    Добавить в корзину
+                </button>
             </div>
         </div>
-        {{end}}
     </div>
-</main>
+</div>
 
-<!-- Футер -->
 <section class="footer">
     <div class="subscribe-contact-row">
         <div class="container">
@@ -295,18 +291,7 @@
         </div>
     </div>
 </section>
-
 <div id="fly-item" class="fly-item"></div>
-
 <script src="/js/cart/cart.js"></script>
-<script src="/js/store/filters.js"></script>
-<script>
-    // Инициализация корзины при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!localStorage.getItem('cart')) {
-            localStorage.setItem('cart', JSON.stringify([]));
-        }
-    });
-</script>
 </body>
 </html>

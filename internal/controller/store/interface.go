@@ -9,5 +9,6 @@ import (
 
 type IStoreController interface {
 	GetProducts(ctx context.Context) ([]models.Product, error)
+	GetProduct(ctx context.Context, id uint64) (models.Product, error)
 	AddProduct(ctx context.Context, product dto.Product, file *multipart.FileHeader) error
 }

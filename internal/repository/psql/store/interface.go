@@ -7,6 +7,7 @@ import (
 )
 
 type IStoreRepository interface {
+	GetProduct(ctx context.Context, id uint64) (models.Product, error)
 	GetProducts(ctx context.Context) ([]models.Product, error)
 	CreateProduct(ctx context.Context, product dto.Product) error
 }

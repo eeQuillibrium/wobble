@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Конфигурация
     const config = {
-        dadataToken: "", // Замените на реальный ключ
+        dadataToken: "ff1a704a876c041a828dc22625dff9077ecf6d21", // Замените на реальный ключ
         endpoints: {
             createOrder: '/account/CreateOrder',
             getUser: '/account/GetUser',

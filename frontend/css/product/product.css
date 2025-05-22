@@ -1,0 +1,206 @@
+/* Основные стили страницы продукта */
+.product-page {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.breadcrumbs {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    padding: 0 1rem;
+}
+
+.breadcrumbs a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* Контейнер с продуктом */
+.product-detail {
+    display: flex;
+    gap: 3rem;
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+/* Стили для галереи (левая часть) */
+.product-gallery {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.main-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Стили для информации о продукте (правая часть) */
+.product-info {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem;
+}
+
+.product-info h1 {
+    font-size: 2.2rem;
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.category {
+    background: #f0f7ff;
+    color: #0066cc;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.price {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Блок с количеством и кнопкой */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+    padding: 1.2rem 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.quantity-btn {
+    width: 2.5rem;
+    height: 2.2rem;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.quantity-btn:hover {
+    background: #eee;
+}
+
+.quantity-input {
+    width: 4rem;
+    height: 2.5rem;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    -moz-appearance: textfield;
+}
+
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.add-to-cart {
+    padding: 1rem 2rem;
+    background: #1367ef;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.2s;
+    width: 100%;
+    max-width: 300px;
+}
+
+.add-to-cart:hover {
+    background: #c1121f;
+    transform: translateY(-1px);
+}
+
+/* Блок с описанием */
+.product-description {
+    margin: 2rem 0;
+    line-height: 1.6;
+    color: #444;
+}
+
+.product-description h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.product-description p {
+    font-size: 1rem;
+    margin: 0;
+    white-space: pre-line;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .product-detail {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .add-to-cart {
+        max-width: 100%;
+    }
+
+    .main-image {
+        max-height: 350px;
+    }
+}
+
+/* Анимация при добавлении в корзину */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.adding-to-cart {
+    animation: pulse 0.5s ease;
+}
