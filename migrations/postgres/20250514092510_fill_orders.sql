@@ -7,7 +7,7 @@ insert into users.list(
     password,
     role
 ) VALUES
-('Nikita','nikita@mail.ru','login','$2a$10$3PZkZJSCod3ErT6KflvPKutSiTUfFMN6y9WcPb3xlahsKk4607dTy', 'user');
+('Nikita','nikita@mail.ru','login','$2a$10$3PZkZJSCod3ErT6KflvPKutSiTUfFMN6y9WcPb3xlahsKk4607dTy', 'admin');
 
 insert into users.orders(
     user_id,

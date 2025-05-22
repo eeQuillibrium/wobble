@@ -43,10 +43,14 @@ func (c Controller) saveFile(file *multipart.FileHeader) (string, error) {
 
 	frontPath, _ := strings.CutPrefix(fPath, "frontend/")
 
-	f, err := os.Create(frontPath)
+	f, err := os.Create(fPath)
+	if err != nil {
+		return "", err
+	}
+
 	if _, err := io.Copy(f, src); err != nil {
 		return "", err
 	}
 
-	return fPath, nil
+	return frontPath, nil
 }
