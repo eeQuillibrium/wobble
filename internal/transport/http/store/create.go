@@ -30,5 +30,8 @@ func (a *API) AddProduct(c fiber.Ctx) error {
 		})
 	}
 
-	return nil
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Продукт успешно добавлен!",
+	})
 }
